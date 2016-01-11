@@ -1,9 +1,12 @@
 package com.taky.mapmo.home.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.taky.mapmo.home.service.HomeService;
 
 /**
  * <pre>
@@ -18,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class HomeController {
+	@Autowired
+	private HomeService homeService;
 	
 	@RequestMapping(value = "/")
 	public ModelAndView findHome() {
@@ -31,6 +36,21 @@ public class HomeController {
 		model.addAttribute("say", "error!!");
 		//Test
 		return "main";
+	}
+	
+	@RequestMapping(value = "/signin")
+	public String registUser() {
+		System.out.println("signin controller");
+		homeService.registUser();
+		return "SUCCESS NEW USER";
+	}
+
+	public HomeService getHomeService() {
+		return homeService;
+	}
+
+	public void setHomeService(HomeService homeService) {
+		this.homeService = homeService;
 	}
 
 }
