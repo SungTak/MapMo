@@ -5,18 +5,16 @@ import org.springframework.stereotype.Service;
 
 import com.taky.mapmo.home.mapper.HomeMapper;
 
+/**
+ * 
+ * @author SeongTak.Yoon
+ */
 @Service
 public class HomeServiceImpl implements HomeService {
+	
 	@Autowired
 	private HomeMapper homeMapper;
 	
-	@Override
-	public void registUser() {
-		// TODO 트랜잭션
-		System.out.println("service input here");
-		homeMapper.insertUser();
-	}
-
 	public HomeMapper getHomeMapper() {
 		return homeMapper;
 	}

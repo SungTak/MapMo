@@ -8,9 +8,11 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@MapperScan("com.taky.mapmo.home.mapper") //TODO 패키지 이름바꾸자
+@EnableTransactionManagement
+@MapperScan("com.taky.mapmo.home.mapper")
 public class MyBatisConfig {
 
 	@Bean
@@ -21,5 +23,4 @@ public class MyBatisConfig {
 				.getResources("classpath:sql/*.xml"));
 		return sessionFactory.getObject();
 	}
-
 }

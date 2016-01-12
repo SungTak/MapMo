@@ -16,7 +16,7 @@ import com.taky.mapmo.home.service.HomeService;
  * 타임 리프를 보지 않는다.
  * </pre>
  * 
- * @author Taky
+ * @author SeongTak.Yoon
  *
  */
 @Controller
@@ -36,13 +36,6 @@ public class HomeController {
 		model.addAttribute("say", "error!!");
 		//Test
 		return "main";
-	}
-	
-	@RequestMapping(value = "/signin")
-	public String registUser() {
-		System.out.println("signin controller");
-		homeService.registUser();
-		return "SUCCESS NEW USER";
 	}
 
 	public HomeService getHomeService() {
