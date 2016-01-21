@@ -33,7 +33,7 @@ public class HomeController {
 		logger.info("### 홈 화면에 접근하였습니다~ 환영합니다. {}", "ㅎㅎㅎ");
 		
 		ModelAndView model = new ModelAndView("main");
-		model.addObject("say", "hello~~!");
+		model.addObject("say", "MAPMO는 오늘 하루도 응원합니다!");
 		return model;
 	}
 	
