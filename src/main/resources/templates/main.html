@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>MapMo</title>
+	
+	<link rel="stylesheet" type="text/css" href="css/common.css" />
+</head>
+<body>
+<div class="left_menu">
+	<div>
+		<h1 class="app_name">MAPMO</h1>
+		<p th:text="${say}">MAPMO에 오신걸 환영합니다!</p>
+		<ul class="horizon_list">
+			<li><a href="#">로그인</a></li>
+			<li><a href="#">가입</a></li>
+		</ul>
+	</div>
+	<nav>
+		<ul>
+			<li>메뉴1</li>
+			<li>메뉴2</li>
+			<li>메뉴3</li>
+			<li>메뉴4</li>
+		</ul>	
+	</nav>
+</div>
+<div class="main_content">
+	<section>
+	지도
+	</section>
+</div>
+</body>
+</html>
