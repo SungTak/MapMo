@@ -1,5 +1,6 @@
 /**
  * 데이터 검증을 담당
+ * 필수 : 반드시 constants.js를 함께 include 해야합니다.
  */
 function Validator() {
 	if (!(this instanceof arguments.callee)) {
@@ -8,17 +9,15 @@ function Validator() {
 }
 Validator.prototype.checkId = function(id) {
 	if (id.length == 0) {
-		alert("아이디를 입력하세요");
-		return false;
+		return constants.user.ID_EMPTY;
 	}
 	
 	// id는 영문, 숫자로만 구성이 가능하다.
 	var sCheckId = /[^A-Za-z0-9]/;
 	if (sCheckId.test(id)) {
-		alert("아이디는 영문, 숫자로만 구성이 가능합니다.");
-		return false;
+		return constants.user.ID_INVALID;
 	}
-	return true;
+	return constants.user.ID_VALID;
 }
 Validator.prototype.checkPassword = function(password) {
 	if (password.length == 0) {

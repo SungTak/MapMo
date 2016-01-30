@@ -5,7 +5,7 @@
 <title>맵모 회원가입을 환영합니다.</title>
 </head>
 <body>
-<form>
+<form id="join_form">
 <div>
 	<section>
 		<h1>회원 가입하기</h1>
@@ -15,6 +15,7 @@
 				<tr>
 					<td>아이디</td>
 					<td><input type="text" id="id" name="id" maxlength="20" placeholder="영어, 숫자로 구성 가능합니다."/></td>
+					<td><p id="id_check_msg"></p></td>
 				</tr>
 				<tr>
 					<td>비밀번호</td>
@@ -48,15 +49,40 @@
 </div>
 
 <script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/common/constants.js"></script>
 <script src="js/utils/validator.js"></script>
 <script type="text/javascript">
+	$(document).ready(function() {
+		$("#id").focus();
+	});
+
+	$("#id").on("blur", function() {
+		// TODO 유니크한 ID인지 확인
+		
+		var oId = $(this);	
+		var oMessage = $("#id_check_msg");
+		var oValidator = new Validator();
+
+		if (oValidator.checkId(oId.val()) == constants.user.ID_VALID) {
+			oMessage.text("적합한 Id입니다.");
+		} else {
+			oMessage.text("적합하지 않은 Id입니다.");
+		}
+	});
+
 	$("#join_btn").on("click", function(event) {
 		event.preventDefault();
 		
 		var oValidator = new Validator();
+		// TODO 유니크하니ID도 하나만 ㅎㅎ
+		var sIdIsValid = oValidator.checkId($("#id").val());
+		if (sIdIsValid == constants.user.ID_EMPTY) {
+			alert("아이디를 입력하세요");
+			return;
+		}
 		
-		var sId = $("#id").val();
-		if (oValidator.checkId(sId) == false) {
+		if (sIdIsValid == constants.user.ID_INVALID) {
+			alert("아이디는 영문, 숫자로만 구성이 가능합니다.");
 			return;
 		}
 		
@@ -66,6 +92,19 @@
 		}
 		
 		// TODO 비밀번호 한글은 영문으로, 영문은 소문자로해야됨
+		
+		
+		<!-- 회원가입 -->
+		$.ajax({
+			url : "/join",
+			method : "POST",
+			data : $("#join_form").serialize(),
+			dataType : "text"
+		}).done(function(data) {
+			alert(data);
+		}).fail(function(error) {
+			alert(error);
+		});
 	});
 </script>
 </body>
