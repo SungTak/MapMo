@@ -21,32 +21,27 @@ Validator.prototype.checkId = function(id) {
 }
 Validator.prototype.checkPassword = function(password) {
 	if (password.length == 0) {
-		alert("비밀번호를 입력하세요");
-		return false;
+		return constants.user.PASSWORD_EMPTY;
 	}
 	
 	var sCheckPassword = /[^A-Za-z0-9!@#$%^&*()]/;
 	if (sCheckPassword.test(password)) {
-		alert("영문, 숫자, 특수문자만 비밀번호가 가능합니다.");
-		return false;
+		return constants.user.PASSWORD_INVALID;
 	}
 	
 	var sCheckSpecial = /[!@#$%^&*()]/;
 	if (sCheckSpecial.test(password) == false) {
-		alert("비밀번호에 특수문자가 포함되어야 합니다.");
-		return false;
+		return constants.user.PASSWORD_SPECIAL;
 	}
 	
 	var sCheckAlphabet = /[A-Za-z]/;
 	if (sCheckAlphabet.test(password) == false) {
-		alert("비밀번호에 영문자가 포함되어야합니다.");
-		return false;
+		return constants.user.PASSWORD_ALPHABET;
 	}
 	
 	var sCheckNumber = /[0-9]/;
 	if (sCheckNumber.test(password) == false) {
-		alert("비밀번호에 숫자가 포함되어합니다.");
-		return false;
+		return constants.user.PASSWORD_NUMBER;
 	}
-	return true;
+	return constants.user.PASSWORD_VALID;
 }

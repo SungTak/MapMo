@@ -20,6 +20,7 @@
 				<tr>
 					<td>비밀번호</td>
 					<td><input type="password" id="password" name="password" maxlength="20" placeholder="영어, 숫자, 특수문자로 구성되어야 합니다."/></td>
+					<td><p id="password_check_msg"></p></td>
 				</tr>
 				<tr>
 					<td>비밀번호 확인</td>
@@ -63,10 +64,28 @@
 		var oMessage = $("#id_check_msg");
 		var oValidator = new Validator();
 
-		if (oValidator.checkId(oId.val()) == constants.user.ID_VALID) {
-			oMessage.text("적합한 Id입니다.");
+		if (oValidator.checkId(oId.val()) === constants.user.ID_VALID) {
+			oMessage.text("올바른 Id입니다.");
 		} else {
-			oMessage.text("적합하지 않은 Id입니다.");
+			oMessage.text("올바르지 않는 Id입니다. 숫자, 영문만 가능합니다.");
+		}
+	});
+	
+	$("#password").on("blur", function() {
+		var oPassword = $(this);
+		var oMessage = $("#password_check_msg");
+		var oValidator = new Validator();
+		
+		if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_VALID) {
+			oMessage.text("비밀번호가 가능한 패턴입니다.");
+		} else if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_ALPHABET) {
+			oMessage.text("비밀번호에 영문자가 포함되어야 합니다.");
+		} else if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_NUMBER) {
+			oMessage.text("비밀번호에 숫자가 포함되어야 합니다.");
+		} else if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_SPECIAL) {
+			oMessage.text("비밀번호에 특수 문자가 포함되어야 합니다.");
+		} else {
+			oMessage.text("올바르지 않는 비밀번호 패턴입니다.");
 		}
 	});
 
@@ -75,23 +94,45 @@
 		
 		var oValidator = new Validator();
 		// TODO 유니크하니ID도 하나만 ㅎㅎ
-		var sIdIsValid = oValidator.checkId($("#id").val());
-		if (sIdIsValid == constants.user.ID_EMPTY) {
+		var sIdValid = oValidator.checkId($("#id").val());
+		if (sIdValid === constants.user.ID_EMPTY) {
 			alert("아이디를 입력하세요");
 			return;
 		}
 		
-		if (sIdIsValid == constants.user.ID_INVALID) {
+		if (sIdValid === constants.user.ID_INVALID) {
 			alert("아이디는 영문, 숫자로만 구성이 가능합니다.");
 			return;
 		}
 		
-		var sPassword = $("#password").val();
-		if (oValidator.checkPassword(sPassword) == false) {
+		var sPasswordValid = oValidator.checkPassword($("#password").val());
+		if (sPasswordValid === constants.user.PASSWORD_EMPTY) {
+			alert("비밀번호를 입력하세요");
 			return;
 		}
 		
-		// TODO 비밀번호 한글은 영문으로, 영문은 소문자로해야됨
+		if (sPasswordValid === constants.user.PASSWORD_INVALID) {
+			alert("영문, 숫자, 특수문자만 비밀번호가 가능합니다.");
+			return;
+		}
+		
+		if (sPasswordValid === constants.user.PASSWORD_SPECIAL) {
+			alert("비밀번호에 특수문자가 포함되어야 합니다.");
+			return;
+		}
+		
+		if (sPasswordValid === constants.user.PASSWORD_ALPHABET) {
+			alert("비밀번호에 영문자가 포함되어야합니다.");
+			return;
+		}
+		
+		if (sPasswordValid === constants.user.PASSWORD_NUMBER) {
+			alert("비밀번호에 숫자가 포함되어합니다.");
+			return;
+		}
+		
+		// TODO 비밀번호 대소문자 구별, 케이스 키 활성화 확인해야됨
+		// 리다이렉트?
 		
 		
 		<!-- 회원가입 -->
