@@ -52,6 +52,7 @@
 <script src="js/jquery-1.12.0.min.js"></script>
 <script src="js/common/constants.js"></script>
 <script src="js/utils/validator.js"></script>
+<script src="js/utils/keyboard.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#id").focus();
@@ -69,6 +70,16 @@
 		} else {
 			oMessage.text("올바르지 않는 Id입니다. 숫자, 영문만 가능합니다.");
 		}
+	});
+	
+	$("#password").on("keypress", function(event) {
+		var oMessage = $("#password_check_msg");
+		var oKeyboard = new KeyboardUtils();
+		
+		if (oKeyboard.checkCapsLock(event)) {
+			oMessage.text("Caps Lock이 켜져있습니다.");
+		}
+		
 	});
 	
 	$("#password").on("blur", function() {
