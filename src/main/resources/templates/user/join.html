@@ -24,7 +24,8 @@
 				</tr>
 				<tr>
 					<td>비밀번호 확인</td>
-					<td><input type="password" id="confirmPassword" name="confirmPassword" maxlength="20" placeholder="영어, 숫자, 특수문자로 구성되어야 합니다."/></td>
+					<td><input type="password" id="confirm_password" name="confirmPassword" maxlength="20" placeholder="영어, 숫자, 특수문자로 구성되어야 합니다."/></td>
+					<td><p id="confirm_password_check_msg"></p></td>
 				</tr>
 				<tr>
 					<td>이메일</td>
@@ -99,12 +100,25 @@
 			oMessage.text("올바르지 않는 비밀번호 패턴입니다.");
 		}
 	});
+	
+	$("#confirm_password").on("blur", function() {
+		var oConfirmPassword = $(this);
+		var oPassword = $("#password");
+		var oMessage = $("#confirm_password_check_msg");
+		
+		if (oConfirmPassword.val() === oPassword.val()) {
+			oMessage.text("비밀번호 확인 완료");
+		} else {
+			oMessage.text("비밀번호 확인이 틀렸습니다! 다시 확인해주세요.");
+		}
+	});
 
 	$("#join_btn").on("click", function(event) {
 		event.preventDefault();
 		
 		var oValidator = new Validator();
 		// TODO 유니크하니ID도 하나만 ㅎㅎ
+		<!-- id -->
 		var sIdValid = oValidator.checkId($("#id").val());
 		if (sIdValid === constants.user.ID_EMPTY) {
 			alert("아이디를 입력하세요");
@@ -116,7 +130,9 @@
 			return;
 		}
 		
-		var sPasswordValid = oValidator.checkPassword($("#password").val());
+		<!-- password -->
+		var sPassword = $("#password").val();
+		var sPasswordValid = oValidator.checkPassword(sPassword);
 		if (sPasswordValid === constants.user.PASSWORD_EMPTY) {
 			alert("비밀번호를 입력하세요");
 			return;
@@ -142,7 +158,16 @@
 			return;
 		}
 		
-		// TODO 비밀번호 대소문자 구별, 케이스 키 활성화 확인해야됨
+		<!-- confirm password -->
+		var sConfirmPassword = $("#confirm_password").val();
+		if (sPassword !== sConfirmPassword) {
+			alert("비밀번호 확인이 틀렸습니다! 다시 확인해주세요.");
+			return;
+		}
+		
+		
+		
+		
 		// 리다이렉트?
 		
 		
