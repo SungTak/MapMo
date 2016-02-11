@@ -1,14 +1,19 @@
 package com.taky.mapmo.user.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -107,6 +112,31 @@ public class UserController {
 		}
 		
 		return "파일이 업로드 되었습니다.";
+	}
+	
+	@RequestMapping(value = "/download/{name}", method = RequestMethod.GET, produces = "image/png")
+	@ResponseBody
+	public ResponseEntity<InputStreamResource> downloadFile(@PathVariable("name") String name, HttpServletResponse response) throws Exception {
+		logger.debug("### 다운로드 고고");
+		
+		File file = new File(System.getProperty("user.home") + "/static/image/upload/" + name +".png");
+		InputStream is = new FileInputStream(file);
+		
+		// 이게 있어야 파일이 다운로드됨, 안그러면 걍 브라우저에서 열림
+		response.setHeader("Content-Disposition", "attachment;filename=" + name + ".png");
+		
+		return ResponseEntity.ok().body(new InputStreamResource(is));
+	}
+
+	@RequestMapping(value = "/download/fs/{name}", method = RequestMethod.GET, produces = "image/png")
+	@ResponseBody
+	public FileSystemResource downloadByFileSystem(@PathVariable("name") String name, HttpServletResponse response) throws Exception {
+		logger.debug("### 다운로드 고고2222");
+		
+		// 이게 있어야 파일이 다운로드됨, 안그러면 걍 브라우저에서 열림
+		response.setHeader("Content-Disposition", "attachment;filename=" + name + ".png");
+		
+		return new FileSystemResource(new File(System.getProperty("user.home") + "/static/image/upload/" + name +".png"));
 	}
 
 	public UserService getUserService() {

@@ -15,6 +15,12 @@
 업로드된 이미지 Test <img id="uploaded_image" th:src="${userProfile.profileImageUrl}" alt="업로드된 이미지" />
 </div>
 </form>
+<form name="download_form">
+<div>
+<button id="download">다운로드</button>
+<button id="downloadfs">다운로드 파일 시스템 버전</button>
+</div>
+</form>
 <script src="../js/jquery-1.12.0.min.js"></script>
 <script type="text/javascript">
 //<![CDATA[
@@ -26,6 +32,22 @@
 			}
 			fileReader.readAsDataURL(this.files[0]);
 		}
+	});
+	
+	$("#download").on("click", function(event) {
+		event.preventDefault();
+		
+		document.download_form.action = "/download/u92-brown-thum";
+		document.download_form.method = "get";
+		document.download_form.submit();
+	});
+	
+	$("#downloadfs").on("click", function(event) {
+		event.preventDefault();
+		
+		document.download_form.action = "/download/fs/u92-brown-thum";
+		document.download_form.method = "get";
+		document.download_form.submit();
 	});
 //]]> // 타임리프때문에 SAX 파싱에러 대응, 주석처리 CDATA는 자바스크립트 코드 수행을 위함, 뭐이래 -_- 
 </script>
