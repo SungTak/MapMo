@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>프로필 정보</title>
+</head>
+<body>
+<form id="upload_form" action="/upload/profile" method="post" enctype="multipart/form-data">
+<div>
+프로필 업로드 <input type="file" id="profile" name="profileImage"/>
+미리보기 <img id="preview" src="#" alt="프로필 미리보기" />
+</div>
+<div>
+<button type="submit" form="upload_form" id="upload">업로드</button>
+업로드된 이미지 Test <img id="uploaded_image" th:src="${userProfile.profileImageUrl}" alt="업로드된 이미지" />
+</div>
+</form>
+<script src="../js/jquery-1.12.0.min.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+	$("#profile").on("change", function() {
+		if (this.files && this.files[0]) {
+			var fileReader = new FileReader();
+			fileReader.onload = function(e) {
+				$("#preview").attr("src", e.target.result);
+			}
+			fileReader.readAsDataURL(this.files[0]);
+		}
+	});
+//]]> // 타임리프때문에 SAX 파싱에러 대응, 주석처리 CDATA는 자바스크립트 코드 수행을 위함, 뭐이래 -_- 
+</script>
+</body>
+</html>
