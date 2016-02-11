@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>맵모 회원가입을 환영합니다.</title>
+</head>
+<body>
+<form id="join_form">
+<div>
+	<section>
+		<h1>회원 가입하기</h1>
+		<p th:text="${result}">신규 가입을 환영합니다.</p>
+		<div>
+			<table>
+				<tr>
+					<td>아이디</td>
+					<td><input type="text" id="id" name="id" maxlength="20" placeholder="영어, 숫자로 구성 가능합니다."/></td>
+					<td><p id="id_check_msg"></p></td>
+				</tr>
+				<tr>
+					<td>비밀번호</td>
+					<td><input type="password" id="password" name="password" maxlength="20" placeholder="영어, 숫자, 특수문자로 구성되어야 합니다."/></td>
+					<td><p id="password_check_msg"></p></td>
+				</tr>
+				<tr>
+					<td>비밀번호 확인</td>
+					<td><input type="password" id="confirm_password" name="confirmPassword" maxlength="20" placeholder="영어, 숫자, 특수문자로 구성되어야 합니다."/></td>
+					<td><p id="confirm_password_check_msg"></p></td>
+				</tr>
+				<tr>
+					<td>이메일</td>
+					<td><input type="text" id="email" name="email" /></td>
+				</tr>
+				<tr>
+					<td>이름(닉네임)</td>
+					<td><input type="text" id="name" name="name" /></td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			<ul>
+				<li><a href="#" id="join_btn">가입하기</a></li>
+				<li><a href="/">취소하기</a></li>
+			</ul>
+		</div>
+	</section>
+</div>
+</form>
+<div class="footer">
+	Copyright 2016-2016 by 테이키. All Rights Reserved. 
+</div>
+
+<script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/common/constants.js"></script>
+<script src="js/utils/validator.js"></script>
+<script src="js/utils/keyboard.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#id").focus();
+	});
+
+	$("#id").on("blur", function() {
+		// TODO 유니크한 ID인지 확인
+		
+		var oId = $(this);	
+		var oMessage = $("#id_check_msg");
+		var oValidator = new Validator();
+
+		if (oValidator.checkId(oId.val()) === constants.user.ID_VALID) {
+			oMessage.text("올바른 Id입니다.");
+		} else {
+			oMessage.text("올바르지 않는 Id입니다. 숫자, 영문만 가능합니다.");
+		}
+	});
+	
+	$("#password").on("keypress", function(event) {
+		var oMessage = $("#password_check_msg");
+		var oKeyboard = new KeyboardUtils();
+		
+		if (oKeyboard.checkCapsLock(event)) {
+			oMessage.text("Caps Lock이 켜져있습니다.");
+		}
+		
+	});
+	
+	$("#password").on("blur", function() {
+		var oPassword = $(this);
+		var oMessage = $("#password_check_msg");
+		var oValidator = new Validator();
+		
+		if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_VALID) {
+			oMessage.text("비밀번호가 가능한 패턴입니다.");
+		} else if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_ALPHABET) {
+			oMessage.text("비밀번호에 영문자가 포함되어야 합니다.");
+		} else if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_NUMBER) {
+			oMessage.text("비밀번호에 숫자가 포함되어야 합니다.");
+		} else if (oValidator.checkPassword(oPassword.val()) === constants.user.PASSWORD_SPECIAL) {
+			oMessage.text("비밀번호에 특수 문자가 포함되어야 합니다.");
+		} else {
+			oMessage.text("올바르지 않는 비밀번호 패턴입니다.");
+		}
+	});
+	
+	$("#confirm_password").on("blur", function() {
+		var oConfirmPassword = $(this);
+		var oPassword = $("#password");
+		var oMessage = $("#confirm_password_check_msg");
+		
+		if (oConfirmPassword.val() === oPassword.val()) {
+			oMessage.text("비밀번호 확인 완료");
+		} else {
+			oMessage.text("비밀번호 확인이 틀렸습니다! 다시 확인해주세요.");
+		}
+	});
+
+	$("#join_btn").on("click", function(event) {
+		event.preventDefault();
+		
+		var oValidator = new Validator();
+		// TODO 유니크하니ID도 하나만 ㅎㅎ
+		<!-- id -->
+		var sIdValid = oValidator.checkId($("#id").val());
+		if (sIdValid === constants.user.ID_EMPTY) {
+			alert("아이디를 입력하세요");
+			return;
+		}
+		
+		if (sIdValid === constants.user.ID_INVALID) {
+			alert("아이디는 영문, 숫자로만 구성이 가능합니다.");
+			return;
+		}
+		
+		<!-- password -->
+		var sPassword = $("#password").val();
+		var sPasswordValid = oValidator.checkPassword(sPassword);
+		if (sPasswordValid === constants.user.PASSWORD_EMPTY) {
+			alert("비밀번호를 입력하세요");
+			return;
+		}
+		
+		if (sPasswordValid === constants.user.PASSWORD_INVALID) {
+			alert("영문, 숫자, 특수문자만 비밀번호가 가능합니다.");
+			return;
+		}
+		
+		if (sPasswordValid === constants.user.PASSWORD_SPECIAL) {
+			alert("비밀번호에 특수문자가 포함되어야 합니다.");
+			return;
+		}
+		
+		if (sPasswordValid === constants.user.PASSWORD_ALPHABET) {
+			alert("비밀번호에 영문자가 포함되어야합니다.");
+			return;
+		}
+		
+		if (sPasswordValid === constants.user.PASSWORD_NUMBER) {
+			alert("비밀번호에 숫자가 포함되어합니다.");
+			return;
+		}
+		
+		<!-- confirm password -->
+		var sConfirmPassword = $("#confirm_password").val();
+		if (sPassword !== sConfirmPassword) {
+			alert("비밀번호 확인이 틀렸습니다! 다시 확인해주세요.");
+			return;
+		}
+		
+		
+		
+		
+		// 리다이렉트?
+		
+		
+		<!-- 회원가입 -->
+		$.ajax({
+			url : "/join",
+			method : "POST",
+			data : $("#join_form").serialize(),
+			dataType : "text"
+		}).done(function(data) {
+			alert(data);
+		}).fail(function(error) {
+			alert(error);
+		});
+	});
+</script>
+</body>
+</html>
