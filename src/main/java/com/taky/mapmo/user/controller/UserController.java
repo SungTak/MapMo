@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.taky.mapmo.user.model.Awaiter;
 import com.taky.mapmo.user.model.UserProfile;
+import com.taky.mapmo.user.service.AwaiterService;
 import com.taky.mapmo.user.service.UserService;
 
 /**
@@ -29,12 +31,15 @@ import com.taky.mapmo.user.service.UserService;
  * @author SeongTak.Yoon
  *
  */
-@Controller //TODO user prefix를 붙일까 말까..-_- URL형태
+@Controller
 public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private AwaiterService awaitService;
 	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String requestJoin() throws Exception {
@@ -44,11 +49,16 @@ public class UserController {
 	
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
 	@ResponseBody
-	public String submitJoin() throws Exception {
+	public String submitJoin(Awaiter awaiter) throws Exception {
 		logger.info("### 신규 회원 가입 정보 제출.");
+		
 		
 		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
 		// 암호화 확인 
+		
+		awaitService.registerAwatier(awaiter);
+		
+		
 		return "맵모 회원이 되신 것을 환영합니다!";
 	}
 	
@@ -145,5 +155,13 @@ public class UserController {
 
 	public void setUserService(UserService userService) {
 		this.userService = userService;
+	}
+
+	public AwaiterService getAwaitService() {
+		return awaitService;
+	}
+
+	public void setAwaitService(AwaiterService awaitService) {
+		this.awaitService = awaitService;
 	}
 }
