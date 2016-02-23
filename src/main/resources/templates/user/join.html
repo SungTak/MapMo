@@ -60,16 +60,29 @@
 	});
 
 	$("#id").on("blur", function() {
-		// TODO 유니크한 ID인지 확인
-		
-		var oId = $(this);	
+		var oId = $(this);
 		var oMessage = $("#id_check_msg");
 		var oValidator = new Validator();
-
 		if (oValidator.checkId(oId.val()) === constants.user.ID_VALID) {
 			oMessage.text("올바른 Id입니다.");
 		} else {
 			oMessage.text("올바르지 않는 Id입니다. 숫자, 영문만 가능합니다.");
+		}
+		
+		// ID를 입력해야 ajax를 호출한다.
+		var id = oId.val();
+		if (id.length > 0) {
+			$.ajax({
+				url : "/search/user/id/" + id,
+				method : "GET",
+				dataType : "json" 
+			}).done(function(data) {
+				if (data.exist) {
+					oMessage.text("이미 ID가 존재합니다."); // TODO 서브밋도. 모듈화시켜야할듯!
+				}
+			}).fail(function(error) {
+				oMessage.text("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
+			});		
 		}
 	});
 	

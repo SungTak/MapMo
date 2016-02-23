@@ -1,14 +1,19 @@
 package com.taky.mapmo.user.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.taky.mapmo.check.model.UserChecker;
+import com.taky.mapmo.check.service.CheckService;
+import com.taky.mapmo.user.model.Awaiter;
+import com.taky.mapmo.user.model.User;
 import com.taky.mapmo.user.model.UserProfile;
+import com.taky.mapmo.user.service.AwaiterService;
 import com.taky.mapmo.user.service.UserService;
 
 /**
@@ -24,12 +34,18 @@ import com.taky.mapmo.user.service.UserService;
  * @author SeongTak.Yoon
  *
  */
-@Controller //TODO user prefix를 붙일까 말까..-_- URL형태
+@Controller
 public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private AwaiterService awaiterService;
+	
+	@Autowired
+	private CheckService checkService;
 	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String requestJoin() throws Exception {
@@ -39,24 +55,33 @@ public class UserController {
 	
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
 	@ResponseBody
-	public String submitJoin() throws Exception {
+	public String submitJoin(Awaiter awaiter) throws Exception {
 		logger.info("### 신규 회원 가입 정보 제출.");
+		
 		
 		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
 		// 암호화 확인 
+		
+		awaiterService.registerAwatier(awaiter);
+		
+		
 		return "맵모 회원이 되신 것을 환영합니다!";
 	}
 	
 	@RequestMapping(value = "/signin")
 	public ModelAndView registUser() throws Exception {
-		System.out.println("signin controller");
-		getUserService().registUser();
-		System.out.println("success new user");
+		userService.registUser();
 		
 		ModelAndView model = new ModelAndView("signin/signin");
 		model.addObject("result", "SUCCESS NEW USER");
 		
 		return model;
+	}
+	
+	@RequestMapping(value = "/search/user/id/{id}")
+	@ResponseBody
+	public UserChecker searchUserId(@PathVariable("id") String id) throws Exception {
+		return checkService.checkUser(id);
 	}
 	
 	@RequestMapping(value = "/show/profile", method = RequestMethod.GET)
@@ -108,6 +133,31 @@ public class UserController {
 		
 		return "파일이 업로드 되었습니다.";
 	}
+	
+	@RequestMapping(value = "/download/{name}", method = RequestMethod.GET, produces = "image/png")
+	@ResponseBody
+	public ResponseEntity<InputStreamResource> downloadFile(@PathVariable("name") String name, HttpServletResponse response) throws Exception {
+		logger.debug("### 다운로드 고고");
+		
+		File file = new File(System.getProperty("user.home") + "/static/image/upload/" + name +".png");
+		InputStream is = new FileInputStream(file);
+		
+		// 이게 있어야 파일이 다운로드됨, 안그러면 걍 브라우저에서 열림
+		response.setHeader("Content-Disposition", "attachment;filename=" + name + ".png");
+		
+		return ResponseEntity.ok().body(new InputStreamResource(is));
+	}
+
+	@RequestMapping(value = "/download/fs/{name}", method = RequestMethod.GET, produces = "image/png")
+	@ResponseBody
+	public FileSystemResource downloadByFileSystem(@PathVariable("name") String name, HttpServletResponse response) throws Exception {
+		logger.debug("### 다운로드 고고2222");
+		
+		// 이게 있어야 파일이 다운로드됨, 안그러면 걍 브라우저에서 열림
+		response.setHeader("Content-Disposition", "attachment;filename=" + name + ".png");
+		
+		return new FileSystemResource(new File(System.getProperty("user.home") + "/static/image/upload/" + name +".png"));
+	}
 
 	public UserService getUserService() {
 		return userService;
@@ -115,5 +165,21 @@ public class UserController {
 
 	public void setUserService(UserService userService) {
 		this.userService = userService;
+	}
+
+	public AwaiterService getAwaitService() {
+		return awaiterService;
+	}
+
+	public void setAwaitService(AwaiterService awaitService) {
+		this.awaiterService = awaitService;
+	}
+
+	public CheckService getCheckService() {
+		return checkService;
+	}
+
+	public void setCheckService(CheckService checkService) {
+		this.checkService = checkService;
 	}
 }

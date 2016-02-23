@@ -1,5 +1,7 @@
 package com.taky.mapmo.user.service;
 
+import com.taky.mapmo.user.model.User;
+
 /**
  * 유저의 가입 정보, 데이터 담당
  * 
@@ -8,4 +10,5 @@ package com.taky.mapmo.user.service;
  */
 public interface UserService {
 	public void registUser() throws Exception;
+	public User findUser(String id) throws Exception;
 }

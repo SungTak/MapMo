@@ -4,7 +4,11 @@ import java.io.File;
 
 import javax.servlet.ServletException;
 
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -15,14 +19,17 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class TomcatConfig {
+	private static final int HTTPS_PORT = 8443;
+	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {
 		
-		// http://stackoverflow.com/questions/25995635/can-i-enable-the-tomcat-manager-app-for-spring-boots-embedded-tomcat
-		// http://tibang.tistory.com/626
-		return new TomcatEmbeddedServletContainerFactory() {
+		TomcatEmbeddedServletContainerFactory tomcat =  new TomcatEmbeddedServletContainerFactory() {
 			private Logger logger = LoggerFactory.getLogger(this.getClass());	
 
+			// 이미지 저장 논리 경로 설정
+			// http://stackoverflow.com/questions/25995635/can-i-enable-the-tomcat-manager-app-for-spring-boots-embedded-tomcat
+			// http://tibang.tistory.com/626
 			@Override
 			protected TomcatEmbeddedServletContainer getTomcatEmbeddedServletContainer(Tomcat tomcat) {
 				try {
@@ -39,9 +46,37 @@ public class TomcatConfig {
 					logger.error("### 톰캣의 URL 물리 경로를 찾지 못했습니다!", e);
 				}
 				
-				
 				return super.getTomcatEmbeddedServletContainer(tomcat);
 			}
+
+			// HTTPS 세팅
+			// http://hellowk1.blogspot.kr/2015/04/spring-tomcat-https.html
+			// https://www.drissamri.be/blog/java/enable-https-in-spring-boot/
+//			@Override
+//			protected void postProcessContext(Context context) {
+//				SecurityCollection collection = new SecurityCollection();
+//				collection.addPattern("/*");
+//
+//				SecurityConstraint securityConstraint = new SecurityConstraint();
+//				securityConstraint.setUserConstraint("CONFIDENTIAL");
+//				securityConstraint.addCollection(collection);
+//				
+//				context.addConstraint(securityConstraint);
+//			}
 		};
+		
+//		tomcat.addAdditionalTomcatConnectors(initHttpConnector());
+//		tomcat.setPort(HTTPS_PORT);
+		return tomcat;
+	}
+	
+	// HTTPS 세팅
+	private Connector initHttpConnector() {
+		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+		connector.setScheme("http");
+		connector.setPort(8080);
+		connector.setSecure(false);
+		connector.setRedirectPort(HTTPS_PORT);
+		return connector;
 	}
 }
