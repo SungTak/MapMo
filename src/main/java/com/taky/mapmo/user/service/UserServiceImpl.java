@@ -1,12 +1,11 @@
 package com.taky.mapmo.user.service;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.taky.mapmo.home.mapper.UserMapper;
+import com.taky.mapmo.user.mapper.UserMapper;
+import com.taky.mapmo.user.model.User;
 
 /**
  * 
@@ -29,8 +28,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void registUser() throws Exception {
-		System.out.println("service input here");
-		getUserMapper().insertUser();
+		userMapper.insertUser();
+	}
+
+	@Override
+	public User findUser(String id) throws Exception {
+		return userMapper.selectUser(id);
 	}
 
 	public UserMapper getUserMapper() {

@@ -6,4 +6,19 @@
 		INSERT INTO Awaiter(id, name, password, email, accreditation_url, regdate, moddate) 
 		VALUES(#{id}, #{name}, #{password}, #{email}, #{accreditationUrl}, NOW(), NOW())
 	</insert>
+	
+	<select id="selectAwaiter" parameterType="String" resultType="awaiter">
+		/* Awaiter.selectAwaiter */
+		SELECT 
+			id, 
+			name, 
+			password, 
+			email, 
+			accreditation_url AS accreditationUrl, 
+			regdate, 
+			moddate
+			
+		FROM awaiter
+		WHERE id = #{id}
+	</select>
 </mapper>

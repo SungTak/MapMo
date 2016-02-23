@@ -2,6 +2,9 @@ package com.taky.mapmo.user.model;
 
 import java.util.Date;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("user")
 public class User {
 	private String id;
 	private String name;

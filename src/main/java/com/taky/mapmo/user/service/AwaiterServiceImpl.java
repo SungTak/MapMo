@@ -18,6 +18,11 @@ public class AwaiterServiceImpl implements AwaiterService {
 		awaiterMapper.insertAwaiter(awaiter);
 	}
 
+	@Override
+	public Awaiter findAwatier(String id) throws Exception {
+		return awaiterMapper.selectAwaiter(id);
+	}
+	
 	public AwaiterMapper getAwaiterMapper() {
 		return awaiterMapper;
 	}
@@ -25,4 +30,5 @@ public class AwaiterServiceImpl implements AwaiterService {
 	public void setAwaiterMapper(AwaiterMapper awaiterMapper) {
 		this.awaiterMapper = awaiterMapper;
 	}
+
 }

@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.taky.mapmo.check.model.UserChecker;
+import com.taky.mapmo.check.service.CheckService;
 import com.taky.mapmo.user.model.Awaiter;
+import com.taky.mapmo.user.model.User;
 import com.taky.mapmo.user.model.UserProfile;
 import com.taky.mapmo.user.service.AwaiterService;
 import com.taky.mapmo.user.service.UserService;
@@ -39,7 +42,10 @@ public class UserController {
 	private UserService userService;
 	
 	@Autowired
-	private AwaiterService awaitService;
+	private AwaiterService awaiterService;
+	
+	@Autowired
+	private CheckService checkService;
 	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String requestJoin() throws Exception {
@@ -56,7 +62,7 @@ public class UserController {
 		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
 		// 암호화 확인 
 		
-		awaitService.registerAwatier(awaiter);
+		awaiterService.registerAwatier(awaiter);
 		
 		
 		return "맵모 회원이 되신 것을 환영합니다!";
@@ -64,14 +70,18 @@ public class UserController {
 	
 	@RequestMapping(value = "/signin")
 	public ModelAndView registUser() throws Exception {
-		System.out.println("signin controller");
-		getUserService().registUser();
-		System.out.println("success new user");
+		userService.registUser();
 		
 		ModelAndView model = new ModelAndView("signin/signin");
 		model.addObject("result", "SUCCESS NEW USER");
 		
 		return model;
+	}
+	
+	@RequestMapping(value = "/search/user/id/{id}")
+	@ResponseBody
+	public UserChecker searchUserId(@PathVariable("id") String id) throws Exception {
+		return checkService.checkUser(id);
 	}
 	
 	@RequestMapping(value = "/show/profile", method = RequestMethod.GET)
@@ -158,10 +168,18 @@ public class UserController {
 	}
 
 	public AwaiterService getAwaitService() {
-		return awaitService;
+		return awaiterService;
 	}
 
 	public void setAwaitService(AwaiterService awaitService) {
-		this.awaitService = awaitService;
+		this.awaiterService = awaitService;
+	}
+
+	public CheckService getCheckService() {
+		return checkService;
+	}
+
+	public void setCheckService(CheckService checkService) {
+		this.checkService = checkService;
 	}
 }
