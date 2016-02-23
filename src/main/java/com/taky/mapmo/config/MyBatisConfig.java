@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
@@ -24,8 +23,6 @@ public class MyBatisConfig {
 		
 		// http://okky.kr/article/292353, mapper가 두개가되면..
 		// http://stackoverflow.com/questions/25405167/finding-resources-with-pathmatchingresourcepatternresolver-and-urlclassloader-in
-//		sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver()
-//				.getResources("classpath:sql/*.xml"));
 		sessionFactory.setMapperLocations(new Resource[] {
 				new ClassPathResource("sql/user.xml"),
 				new ClassPathResource("sql/awaiter.xml")

@@ -7,4 +7,5 @@ import com.taky.mapmo.user.model.Awaiter;
 @Repository
 public interface AwaiterMapper {
 	public void insertAwaiter(Awaiter awaiter);
+	public Awaiter selectAwaiter(String id);
 }

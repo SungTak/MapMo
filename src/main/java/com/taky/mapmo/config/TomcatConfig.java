@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.slf4j.Logger;
@@ -20,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class TomcatConfig {
-	private static final int HTTPS_PORT = 8945;
+	private static final int HTTPS_PORT = 8443;
 	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {
@@ -53,22 +52,21 @@ public class TomcatConfig {
 			// HTTPS 세팅
 			// http://hellowk1.blogspot.kr/2015/04/spring-tomcat-https.html
 			// https://www.drissamri.be/blog/java/enable-https-in-spring-boot/
-			@Override
-			protected void postProcessContext(Context context) {
-				SecurityCollection collection = new SecurityCollection();
-				collection.addPattern("/*");
-
-				SecurityConstraint securityConstraint = new SecurityConstraint();
-				securityConstraint.setUserConstraint("CONFIDENTIAL");
-				securityConstraint.addCollection(collection);
-				
-				context.addConstraint(securityConstraint);
-			}
+//			@Override
+//			protected void postProcessContext(Context context) {
+//				SecurityCollection collection = new SecurityCollection();
+//				collection.addPattern("/*");
+//
+//				SecurityConstraint securityConstraint = new SecurityConstraint();
+//				securityConstraint.setUserConstraint("CONFIDENTIAL");
+//				securityConstraint.addCollection(collection);
+//				
+//				context.addConstraint(securityConstraint);
+//			}
 		};
 		
-		tomcat.addAdditionalTomcatConnectors(initHttpConnector());
-		tomcat.setPort(HTTPS_PORT);
-		//tomcat.addAdditionalTomcatConnectors(initHttpsConnector());
+//		tomcat.addAdditionalTomcatConnectors(initHttpConnector());
+//		tomcat.setPort(HTTPS_PORT);
 		return tomcat;
 	}
 	
@@ -79,14 +77,6 @@ public class TomcatConfig {
 		connector.setPort(8080);
 		connector.setSecure(false);
 		connector.setRedirectPort(HTTPS_PORT);
-		
-		// http://stackoverflow.com/questions/19613562/how-can-i-specify-my-keystore-file-with-spring-boot-and-tomcat
-//		Http11NioProtocol protocol = (Http11NioProtocol)connector.getProtocolHandler();
-//		protocol.setKeystoreFile("C:/Users/YoonSungTak/.keystore");
-//		protocol.setKeystorePass("20072725");
-//		protocol.setKeyPass("20072725");
-//		protocol.setKeyAlias("tomcat");
-		
 		return connector;
 	}
 }
