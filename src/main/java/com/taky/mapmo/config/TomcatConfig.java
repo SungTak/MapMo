@@ -20,7 +20,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class TomcatConfig {
-	private static final int HTTPS_PORT = 8945;
+	private static final int HTTPS_PORT = 8443;
+	private static final String KEYSTORE_PATH = "C:/Program Files/Java/jdk1.8.0_45/bin/keystore.p12";
 	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {
@@ -68,7 +69,7 @@ public class TomcatConfig {
 		
 		tomcat.addAdditionalTomcatConnectors(initHttpConnector());
 		tomcat.setPort(HTTPS_PORT);
-		//tomcat.addAdditionalTomcatConnectors(initHttpsConnector());
+//		tomcat.addAdditionalTomcatConnectors(createSslConnector()); // Properties 자바 버전, port 중복 수행 해결을 위해 tomcat.setPort(0)
 		return tomcat;
 	}
 	
@@ -79,14 +80,25 @@ public class TomcatConfig {
 		connector.setPort(8080);
 		connector.setSecure(false);
 		connector.setRedirectPort(HTTPS_PORT);
-		
-		// http://stackoverflow.com/questions/19613562/how-can-i-specify-my-keystore-file-with-spring-boot-and-tomcat
-//		Http11NioProtocol protocol = (Http11NioProtocol)connector.getProtocolHandler();
-//		protocol.setKeystoreFile("C:/Users/YoonSungTak/.keystore");
-//		protocol.setKeystorePass("20072725");
-//		protocol.setKeyPass("20072725");
-//		protocol.setKeyAlias("tomcat");
-		
 		return connector;
 	}
+	
+	// https://www.lesstif.com/pages/viewpage.action?pageId=20775436
+	// http://stackoverflow.com/questions/19613562/how-can-i-specify-my-keystore-file-with-spring-boot-and-tomcat
+//	private Connector createSslConnector() {
+//	    Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+//	    Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
+//	    File keystore = new File(KEYSTORE_PATH);
+//		File truststore = new File(KEYSTORE_PATH);
+//		connector.setScheme("https");
+//		connector.setSecure(true);
+//		connector.setPort(HTTPS_PORT);
+//		protocol.setSSLEnabled(true);
+//		protocol.setKeystoreFile(keystore.getAbsolutePath());
+//		protocol.setKeystorePass("20072725");
+//		protocol.setTruststoreFile(truststore.getAbsolutePath());
+//		protocol.setTruststorePass("20072725");
+//		protocol.setKeyAlias("tomcat");
+//		return connector;
+//	}
 }
