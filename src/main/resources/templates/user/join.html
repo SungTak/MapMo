@@ -71,6 +71,10 @@
 		
 		// ID를 입력해야 ajax를 호출한다.
 		var id = oId.val();
+		checkDuplicateId(id);
+	});
+	
+	function checkDuplicateId(id) {
 		if (id.length > 0) {
 			$.ajax({
 				url : "/search/user/id/" + id,
@@ -84,7 +88,7 @@
 				oMessage.text("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
 			});		
 		}
-	});
+	}
 	
 	$("#password").on("keypress", function(event) {
 		var oMessage = $("#password_check_msg");
@@ -132,7 +136,8 @@
 		var oValidator = new Validator();
 		// TODO 유니크하니ID도 하나만 ㅎㅎ
 		<!-- id -->
-		var sIdValid = oValidator.checkId($("#id").val());
+		var id = $("#id").val();
+		var sIdValid = oValidator.checkId(id);
 		if (sIdValid === constants.user.ID_EMPTY) {
 			alert("아이디를 입력하세요");
 			return;
@@ -142,6 +147,9 @@
 			alert("아이디는 영문, 숫자로만 구성이 가능합니다.");
 			return;
 		}
+		
+		<!-- 동일 ID DB 체크 -->
+		checkDuplicateId(id);
 		
 		<!-- password -->
 		var sPassword = $("#password").val();
