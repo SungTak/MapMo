@@ -70,11 +70,16 @@
 		}
 		
 		// ID를 입력해야 ajax를 호출한다.
-		var id = oId.val();
-		checkDuplicateId(id);
+		if (isExistId(oId.val())) {
+			oMessage.text("이미 ID가 존재합니다.");
+		} else {
+			oMessage.text("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
+		}
 	});
 	
-	function checkDuplicateId(id) {
+	function isExistId(id) {
+		var isExistId = false;
+		
 		if (id.length > 0) {
 			$.ajax({
 				url : "/search/user/id/" + id,
@@ -82,12 +87,14 @@
 				dataType : "json" 
 			}).done(function(data) {
 				if (data.exist) {
-					oMessage.text("이미 ID가 존재합니다."); // TODO 서브밋도. 모듈화시켜야할듯!
+					isExistId = true;
 				}
 			}).fail(function(error) {
-				oMessage.text("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
+				isExistId = false;
 			});		
 		}
+		
+		return isExistId;
 	}
 	
 	$("#password").on("keypress", function(event) {
@@ -149,7 +156,11 @@
 		}
 		
 		<!-- 동일 ID DB 체크 -->
-		checkDuplicateId(id);
+		if (isExistId(id)) {
+			alert("이미 ID가 존재합니다. 다른 ID를 입력해주세요.");
+		} else {
+			alert("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
+		}
 		
 		<!-- password -->
 		var sPassword = $("#password").val();
