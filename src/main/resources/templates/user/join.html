@@ -67,34 +67,41 @@
 			oMessage.text("올바른 Id입니다.");
 		} else {
 			oMessage.text("올바르지 않는 Id입니다. 숫자, 영문만 가능합니다.");
+			return;
 		}
 		
 		// ID를 입력해야 ajax를 호출한다.
-		if (isExistId(oId.val())) {
-			oMessage.text("이미 ID가 존재합니다.");
-		} else {
-			oMessage.text("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
+		var oResultId = isExistId(oId.val());
+		if (oResultId.isExist) {
+			oMessage.text(oResultId.sMessage);
+			return;
 		}
 	});
 	
 	function isExistId(id) {
-		var isExistId = false;
+		var oResult = { 
+				isExist : true,
+				sMessage : "현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!"
+			};
 		
 		if (id.length > 0) {
 			$.ajax({
 				url : "/search/user/id/" + id,
 				method : "GET",
-				dataType : "json" 
+				dataType : "json",
+				async : false
 			}).done(function(data) {
 				if (data.exist) {
-					isExistId = true;
+					oResult.isExist = true;
+					oResult.sMessage = "이미 ID가 존재합니다.";
+				} else {
+					oResult.isExist = false;
+					oResult.sMessage = "등록할 수 있는 ID입니다.";
 				}
-			}).fail(function(error) {
-				isExistId = false;
 			});		
 		}
 		
-		return isExistId;
+		return oResult;
 	}
 	
 	$("#password").on("keypress", function(event) {
@@ -156,10 +163,10 @@
 		}
 		
 		<!-- 동일 ID DB 체크 -->
-		if (isExistId(id)) {
-			alert("이미 ID가 존재합니다. 다른 ID를 입력해주세요.");
-		} else {
-			alert("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
+		var oResultId = isExistId(id);
+		if (oResultId.isExist) {
+			alert(oResultId.sMessage);
+			return;
 		}
 		
 		<!-- password -->

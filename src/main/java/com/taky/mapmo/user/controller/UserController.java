@@ -58,6 +58,10 @@ public class UserController {
 	public String submitJoin(Awaiter awaiter) throws Exception {
 		logger.info("### 신규 회원 가입 정보 제출.");
 		
+		UserChecker existUser = checkService.checkUser(awaiter.getId());
+		if (existUser.isExist()) {
+			return "이미 ID가 존재합니다. 회원가입을 하실 수 없습니다!";
+		}
 		
 		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
 		// 암호화 확인 
