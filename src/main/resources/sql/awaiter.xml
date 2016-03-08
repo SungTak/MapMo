@@ -21,4 +21,24 @@
 		FROM awaiter
 		WHERE id = #{id}
 	</select>
+
+	<select id="selectAwaiterByUrl" parameterType="String" resultType="awaiter">
+		/* Awaiter.selectAwaiterByUrl */
+		SELECT 
+			id, 
+			name, 
+			password, 
+			email, 
+			accreditation_url AS accreditationUrl, 
+			regdate, 
+			moddate
+			
+		FROM awaiter
+		WHERE accreditation_url = #{accreditationUrl}
+	</select>
+	
+	<delete id="deleteAwaiter" parameterType="String">
+		/* Awaiter.deleteAwaiter */
+		DELETE FROM awaiter WHERE id = #{id}
+	</delete>
 </mapper>

@@ -67,24 +67,42 @@
 			oMessage.text("올바른 Id입니다.");
 		} else {
 			oMessage.text("올바르지 않는 Id입니다. 숫자, 영문만 가능합니다.");
+			return;
 		}
 		
 		// ID를 입력해야 ajax를 호출한다.
-		var id = oId.val();
+		var oResultId = isExistId(oId.val());
+		if (oResultId.isExist) {
+			oMessage.text(oResultId.sMessage);
+			return;
+		}
+	});
+	
+	function isExistId(id) {
+		var oResult = { 
+				isExist : true,
+				sMessage : "현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!"
+			};
+		
 		if (id.length > 0) {
 			$.ajax({
 				url : "/search/user/id/" + id,
 				method : "GET",
-				dataType : "json" 
+				dataType : "json",
+				async : false
 			}).done(function(data) {
 				if (data.exist) {
-					oMessage.text("이미 ID가 존재합니다."); // TODO 서브밋도. 모듈화시켜야할듯!
+					oResult.isExist = true;
+					oResult.sMessage = "이미 ID가 존재합니다.";
+				} else {
+					oResult.isExist = false;
+					oResult.sMessage = "등록할 수 있는 ID입니다.";
 				}
-			}).fail(function(error) {
-				oMessage.text("현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!");
 			});		
 		}
-	});
+		
+		return oResult;
+	}
 	
 	$("#password").on("keypress", function(event) {
 		var oMessage = $("#password_check_msg");
@@ -132,7 +150,8 @@
 		var oValidator = new Validator();
 		// TODO 유니크하니ID도 하나만 ㅎㅎ
 		<!-- id -->
-		var sIdValid = oValidator.checkId($("#id").val());
+		var id = $("#id").val();
+		var sIdValid = oValidator.checkId(id);
 		if (sIdValid === constants.user.ID_EMPTY) {
 			alert("아이디를 입력하세요");
 			return;
@@ -140,6 +159,13 @@
 		
 		if (sIdValid === constants.user.ID_INVALID) {
 			alert("아이디는 영문, 숫자로만 구성이 가능합니다.");
+			return;
+		}
+		
+		<!-- 동일 ID DB 체크 -->
+		var oResultId = isExistId(id);
+		if (oResultId.isExist) {
+			alert(oResultId.sMessage);
 			return;
 		}
 		
@@ -178,12 +204,12 @@
 			return;
 		}
 		
+		// TODO 이메일 체크(대기,유저)
 		
+		// 닉네임 체크 (대기, 유저)
 		
-		
-		// 리다이렉트?
-		
-		
+		// 메일은 Asnyc로 따로 보낼까잉?
+				
 		<!-- 회원가입 -->
 		$.ajax({
 			url : "/join",
@@ -192,8 +218,10 @@
 			dataType : "text"
 		}).done(function(data) {
 			alert(data);
+			location.href = "/";
 		}).fail(function(error) {
 			alert(error);
+			location.href = "/";
 		});
 	});
 </script>
