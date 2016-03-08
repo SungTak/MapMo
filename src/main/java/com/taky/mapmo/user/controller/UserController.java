@@ -3,6 +3,7 @@ package com.taky.mapmo.user.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,8 +24,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.taky.mapmo.check.model.UserChecker;
 import com.taky.mapmo.check.service.CheckService;
+import com.taky.mapmo.common.util.SecurityUtils;
+import com.taky.mapmo.mail.model.Mail;
+import com.taky.mapmo.mail.service.MailService;
 import com.taky.mapmo.user.model.Awaiter;
-import com.taky.mapmo.user.model.User;
 import com.taky.mapmo.user.model.UserProfile;
 import com.taky.mapmo.user.service.AwaiterService;
 import com.taky.mapmo.user.service.UserService;
@@ -47,6 +50,9 @@ public class UserController {
 	@Autowired
 	private CheckService checkService;
 	
+	@Autowired
+	private MailService mailService;
+	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String requestJoin() throws Exception {
 		logger.info("### 신규 가입을 요청하여 회원가입 페이지로 이동합니다.");
@@ -66,10 +72,23 @@ public class UserController {
 		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
 		// 암호화 확인 
 		
+		
+		
+		// 회원 가입 인증 URL만들기
+		String accreditationUrl = SecurityUtils.createAccreditationUrl(awaiter.getId(), new Date());
+		awaiter.setAccreditationUrl(accreditationUrl);
+		
 		awaiterService.registerAwatier(awaiter);
 		
+		Mail mail = new Mail();
+		mail.setTitle("[인증 필요] MapMo 회원가입을 환영합니다!");
+		mail.setTo(awaiter.getEmail());
+		mail.setText("안녕하세요. MapMo에 가입해주셔서 감사합니다. 아래의 인증 URL을 클릭하시면 가입이 완료됩니다! <br>"
+				+ accreditationUrl);
 		
-		return "맵모 회원이 되신 것을 환영합니다!";
+		mailService.send(mail);
+		
+		return "가입하신 메일로 인증 메일을 발송하였습니다. 메일을 확인해주세요!";
 	}
 	
 	@RequestMapping(value = "/signin")
@@ -185,5 +204,13 @@ public class UserController {
 
 	public void setCheckService(CheckService checkService) {
 		this.checkService = checkService;
+	}
+
+	public MailService getMailService() {
+		return mailService;
+	}
+
+	public void setMailService(MailService mailService) {
+		this.mailService = mailService;
 	}
 }

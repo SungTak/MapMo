@@ -1,7 +1,7 @@
 package com.taky.mapmo.mail.service;
 
-import com.taky.mapmo.user.model.Awaiter;
+import com.taky.mapmo.mail.model.Mail;
 
 public interface MailService {
-	public void send(Awaiter awaiter) throws Exception;
+	public void send(Mail mail) throws Exception;
 }

@@ -5,17 +5,20 @@ import java.util.Properties;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.stereotype.Service;
 
-import com.taky.mapmo.user.model.Awaiter;
+import com.taky.mapmo.mail.model.Mail;
 
+@Service
 public class MailServiceImpl implements MailService {
 
 	@Override
-	public void send(Awaiter awaiter) throws Exception {
+	public void send(Mail mail) throws Exception {
 		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-		simpleMailMessage.setFrom("mapmo@taky.com");
-		simpleMailMessage.setTo(awaiter.getEmail());
-		simpleMailMessage.setText("안녕하세요, 맵모입니다");
+		simpleMailMessage.setSubject(mail.getTitle());
+		simpleMailMessage.setFrom(mail.getFrom());
+		simpleMailMessage.setTo(mail.getTo());
+		simpleMailMessage.setText(mail.getText());
 		
 		Properties mailProperties = new Properties();
 		mailProperties.put("mail.smtp.starttls.enable", true);
