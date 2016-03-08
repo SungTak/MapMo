@@ -2,10 +2,12 @@ package com.taky.mapmo.common.util;
 
 import java.util.Date;
 
+import com.taky.mapmo.common.constant.Constants;
+
 public class SecurityUtils {
 	public static String createAccreditationUrl(String id, Date date) throws Exception {
 		String mix = date.getTime() + id;
 
-		return "http://localhost:8080/accreditation/"+ CipherUtils.makeSHA256(mix).toString();
+		return Constants.MAPMO_DOMAIN + CipherUtils.makeSHA256(mix).toString();
 	}
 }

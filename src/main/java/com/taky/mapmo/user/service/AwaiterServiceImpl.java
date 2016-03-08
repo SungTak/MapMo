@@ -23,6 +23,16 @@ public class AwaiterServiceImpl implements AwaiterService {
 		return awaiterMapper.selectAwaiter(id);
 	}
 	
+	@Override
+	public Awaiter findAwatierByUrl(String accreditationUrl) throws Exception {
+		return awaiterMapper.selectAwaiterByUrl(accreditationUrl);
+	}
+	
+	@Override
+	public void removeAwaiter(String id) throws Exception {
+		awaiterMapper.deleteAwaiter(id);
+	}
+
 	public AwaiterMapper getAwaiterMapper() {
 		return awaiterMapper;
 	}

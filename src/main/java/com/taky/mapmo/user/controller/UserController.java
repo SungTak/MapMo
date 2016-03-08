@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.taky.mapmo.check.model.UserChecker;
 import com.taky.mapmo.check.service.CheckService;
+import com.taky.mapmo.common.constant.Constants;
 import com.taky.mapmo.common.util.SecurityUtils;
 import com.taky.mapmo.mail.model.Mail;
 import com.taky.mapmo.mail.service.MailService;
@@ -91,14 +92,19 @@ public class UserController {
 		return "가입하신 메일로 인증 메일을 발송하였습니다. 메일을 확인해주세요!";
 	}
 	
-	@RequestMapping(value = "/signin")
-	public ModelAndView registUser() throws Exception {
-		userService.registUser();
+	@RequestMapping(value = "/accreditation/{cipher}")
+	public String registUser(@PathVariable("cipher") String cipher) throws Exception {
+		String accreditationUrl = Constants.MAPMO_DOMAIN + cipher;
 		
-		ModelAndView model = new ModelAndView("signin/signin");
-		model.addObject("result", "SUCCESS NEW USER");
+		Awaiter awaiter = awaiterService.findAwatierByUrl(accreditationUrl);
 		
-		return model;
+		if (awaiter == null) {
+			return "user/sorry";
+		}
+		
+		userService.registUser(awaiter.getId());
+		
+		return "user/welcome";
 	}
 	
 	@RequestMapping(value = "/search/user/id/{id}")

@@ -204,12 +204,12 @@
 			return;
 		}
 		
+		// TODO 이메일 체크(대기,유저)
 		
+		// 닉네임 체크 (대기, 유저)
 		
-		
-		// 리다이렉트?
-		
-		
+		// 메일은 Asnyc로 따로 보낼까잉?
+				
 		<!-- 회원가입 -->
 		$.ajax({
 			url : "/join",
@@ -218,8 +218,10 @@
 			dataType : "text"
 		}).done(function(data) {
 			alert(data);
+			location.href = "/";
 		}).fail(function(error) {
 			alert(error);
+			location.href = "/";
 		});
 	});
 </script>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.taky.mapmo.user.mapper.UserMapper">
-	<insert id="insertUser">
+	<insert id="insertUser" parameterType="String">
 		/* User.insertUser */
-		INSERT INTO User(name) VALUES("윤성탁")
+		INSERT INTO User(id, name, password, email, regdate, moddate)
+		SELECT id, name, password, email, NOW(), NOW()
+		FROM awaiter
+		WHERE id = #{id}
 	</insert>
 	
 	<select id="selectUser" parameterType="String" resultType="user">
