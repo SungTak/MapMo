@@ -7,6 +7,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,9 +72,10 @@ public class UserController {
 		}
 		
 		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
-		// 암호화 확인 
 		
 		
+		// 단방향 암호화 확인 
+		awaiter.setPassword(DigestUtils.sha256Hex(awaiter.getPassword() + Constants.CIPHER_SALT));
 		
 		// 회원 가입 인증 URL만들기
 		String accreditationUrl = SecurityUtils.createAccreditationUrl(awaiter.getId(), new Date());
@@ -111,6 +113,12 @@ public class UserController {
 	@ResponseBody
 	public UserChecker searchUserId(@PathVariable("id") String id) throws Exception {
 		return checkService.checkUser(id);
+	}
+	
+	@RequestMapping(value = "/search/user/email/{email:.+}")
+	@ResponseBody
+	public UserChecker searchUserEmail(@PathVariable("email") String email) throws Exception {
+		return checkService.checkUserByEmail(email);
 	}
 	
 	@RequestMapping(value = "/show/profile", method = RequestMethod.GET)

@@ -22,4 +22,31 @@
 		FROM user
 		WHERE id = #{id}
 	</select>
+
+	<select id="selectUserBy" parameterType="user" resultType="user">
+		/* User.selectUserBy */
+		SELECT 
+			id, 
+			name, 
+			password, 
+			email, 
+			regdate, 
+			moddate
+			
+		FROM user
+		<where>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(id)">
+				AND id = #{id}
+			</if>	
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(email)">
+				AND email = #{email}
+			</if>	
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(password)">
+				AND password = #{password}
+			</if>	
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(name)">
+				AND name = #{name}
+			</if>	
+		</where>
+	</select>
 </mapper>

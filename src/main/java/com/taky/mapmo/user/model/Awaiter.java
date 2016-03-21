@@ -10,7 +10,7 @@ public class Awaiter {
 	private String name;
 	private String password;
 	private String email;
-	private String accreditationUrl = "테스트데이터에요!"; // TODO 완성되면 삭제필요!
+	private String accreditationUrl;
 	private Date regDate;
 	private Date modDate;
 	

@@ -41,6 +41,11 @@ public class UserServiceImpl implements UserService {
 	public User findUser(String id) throws Exception {
 		return userMapper.selectUser(id);
 	}
+	
+	@Override
+	public User findUser(User user) throws Exception {
+		return userMapper.selectUserBy(user);
+	}
 
 	public UserMapper getUserMapper() {
 		return userMapper;

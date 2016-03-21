@@ -30,6 +30,7 @@
 				<tr>
 					<td>이메일</td>
 					<td><input type="text" id="email" name="email" /></td>
+					<td><p id="email_check_msg"></p></td>
 				</tr>
 				<tr>
 					<td>이름(닉네임)</td>
@@ -143,12 +144,48 @@
 			oMessage.text("비밀번호 확인이 틀렸습니다! 다시 확인해주세요.");
 		}
 	});
+	
+	$("#email").on("blur", function() {
+		var oEmail = $(this);
+		var oMessage = $("#email_check_msg");
+		
+		// TODO 이메일 검증
+		
+		// email을 입력하면 ajax를 호출한다.
+		var oResultEmail = isExist(oEmail.val(), "/search/user/email/", "등록할 수 있는 e-mail입니다.", "이미 등록된 e-mail이 존재합니다.");
+		oMessage.text(oResultEmail.sMessage);
+	});
+	
+	function isExist(data, url, successMessage, failMessage) {
+		var oResult = { 
+				isExist : true,
+				sMessage : "현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!"
+			};
+		
+		if (data.length > 0) {
+			$.ajax({
+				url : url + data,
+				method : "GET",
+				dataType : "json",
+				async : false
+			}).done(function(data) {
+				if (data.exist) {
+					oResult.isExist = true;
+					oResult.sMessage = failMessage;
+				} else {
+					oResult.isExist = false;
+					oResult.sMessage = successMessage;
+				}
+			});		
+		}
+		
+		return oResult;
+	}
 
 	$("#join_btn").on("click", function(event) {
 		event.preventDefault();
 		
 		var oValidator = new Validator();
-		// TODO 유니크하니ID도 하나만 ㅎㅎ
 		<!-- id -->
 		var id = $("#id").val();
 		var sIdValid = oValidator.checkId(id);

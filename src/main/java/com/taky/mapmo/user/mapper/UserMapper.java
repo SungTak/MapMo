@@ -8,4 +8,5 @@ import com.taky.mapmo.user.model.User;
 public interface UserMapper {
 	public void insertUser(String id) throws Exception;
 	public User selectUser(String id) throws Exception;
+	public User selectUserBy(User user) throws Exception;
 }

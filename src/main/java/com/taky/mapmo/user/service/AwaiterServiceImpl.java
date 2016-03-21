@@ -24,6 +24,11 @@ public class AwaiterServiceImpl implements AwaiterService {
 	}
 	
 	@Override
+	public Awaiter findAwaiter(Awaiter awaiter) throws Exception {
+		return awaiterMapper.selectAwaiterBy(awaiter);
+	}
+	
+	@Override
 	public Awaiter findAwatierByUrl(String accreditationUrl) throws Exception {
 		return awaiterMapper.selectAwaiterByUrl(accreditationUrl);
 	}

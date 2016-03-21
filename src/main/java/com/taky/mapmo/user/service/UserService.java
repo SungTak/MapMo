@@ -11,4 +11,5 @@ import com.taky.mapmo.user.model.User;
 public interface UserService {
 	public void registUser(String id) throws Exception;
 	public User findUser(String id) throws Exception;
+	public User findUser(User user) throws Exception;
 }

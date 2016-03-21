@@ -7,8 +7,7 @@
 		VALUES(#{id}, #{name}, #{password}, #{email}, #{accreditationUrl}, NOW(), NOW())
 	</insert>
 	
-	<select id="selectAwaiter" parameterType="String" resultType="awaiter">
-		/* Awaiter.selectAwaiter */
+	<sql id="select-awaiter">
 		SELECT 
 			id, 
 			name, 
@@ -17,21 +16,43 @@
 			accreditation_url AS accreditationUrl, 
 			regdate, 
 			moddate
+	</sql>
+	
+	<select id="selectAwaiter" parameterType="String" resultType="awaiter">
+		/* Awaiter.selectAwaiter */
+		<include refid="select-awaiter"></include>
 			
 		FROM awaiter
 		WHERE id = #{id}
 	</select>
 
+	<select id="selectAwaiterBy" parameterType="awaiter" resultType="awaiter">
+		/* Awaiter.selectAwaiterBy */
+		<include refid="select-awaiter"></include>
+			
+		FROM awaiter
+		<where>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(id)">
+				AND id = #{id}
+			</if>	
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(email)">
+				AND email = #{email}
+			</if>	
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(password)">
+				AND password = #{password}
+			</if>	
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(accreditationUrl)">
+				AND accreditation_url = #{accreditationUrl}
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(name)">
+				AND name = #{name}
+			</if>	
+		</where>
+	</select>
+
 	<select id="selectAwaiterByUrl" parameterType="String" resultType="awaiter">
 		/* Awaiter.selectAwaiterByUrl */
-		SELECT 
-			id, 
-			name, 
-			password, 
-			email, 
-			accreditation_url AS accreditationUrl, 
-			regdate, 
-			moddate
+		<include refid="select-awaiter"></include>
 			
 		FROM awaiter
 		WHERE accreditation_url = #{accreditationUrl}

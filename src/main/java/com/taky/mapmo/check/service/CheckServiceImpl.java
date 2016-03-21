@@ -11,6 +11,10 @@ import com.taky.mapmo.user.service.UserService;
 
 @Service
 public class CheckServiceImpl implements CheckService {
+	private static final String USER = "user";
+
+	private static final String AWAITER = "awaiter";
+
 	@Autowired
 	private AwaiterService awaiterService;
 	
@@ -28,35 +32,70 @@ public class CheckServiceImpl implements CheckService {
 	 */
 	@Override
 	public UserChecker checkUser(String id) throws Exception {
-		UserChecker userChecker = new UserChecker();
-		
 		Awaiter awaiter = awaiterService.findAwatier(id);
 		
 		if (awaiter == null) {
-			userChecker = this.findUser(id);
+			return this.findUser(id);
 		} else {
-			userChecker.setId(awaiter.getId());
-			userChecker.setExist(true);
-			userChecker.setStatus("awaiter");
+			return this.createUserChecker(awaiter.getId(), true, AWAITER);
 		}
-		
-		return userChecker;
 	}
+	
+	@Override
+	public UserChecker checkUserByEmail(String email) throws Exception {
+		Awaiter awaiter = new Awaiter();
+		awaiter.setEmail(email);
+
+		Awaiter existAwaiter = awaiterService.findAwaiter(awaiter);
+		
+		// 대기 목록에 없으면 유저 찾기
+		if (existAwaiter == null) {
+			User user = new User();
+			user.setEmail(email);
+			
+			return this.findUser(user);
+		} else {
+			return this.createUserChecker(existAwaiter.getId(), true, AWAITER);
+		}
+	}
+
 
 	private UserChecker findUser(String id) throws Exception {
-		UserChecker userChecker = new UserChecker();
-		
 		User user = userService.findUser(id);
 		
-		if (user != null) {
-			userChecker.setId(user.getId());
-			userChecker.setExist(true);
-			userChecker.setStatus("user");
+		if (user == null) {
+			return this.createUserChecker(null, false, USER);
+		} else {
+			return this.createUserChecker(user.getId(), true, USER);
 		}
+	}
+	
+	private UserChecker findUser(User user) throws Exception {
+		User existUser = userService.findUser(user);
 		
+		if (existUser == null) {
+			return this.createUserChecker(null, false, USER);
+		} else {
+			return this.createUserChecker(existUser.getId(), true, USER);
+		}
+	}
+	
+	/**
+	 * 유저 정보를 조회한 결과에 대한 모델을 생성한다.
+	 * 
+	 * @param id 유저 아이디
+	 * @param isExist 존재하는지 판단
+	 * @param status 유저의 상태(대기자, 유저)
+	 * @return
+	 */
+	private UserChecker createUserChecker(String id, boolean isExist, String status) {
+		UserChecker userChecker = new UserChecker();
+		userChecker.setId(id);
+		userChecker.setExist(isExist);
+		userChecker.setStatus(status);
 		return userChecker;
 	}
-
+	
 	public AwaiterService getAwaiterService() {
 		return awaiterService;
 	}
