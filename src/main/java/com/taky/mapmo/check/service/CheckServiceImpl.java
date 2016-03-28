@@ -58,6 +58,23 @@ public class CheckServiceImpl implements CheckService {
 			return this.createUserChecker(existAwaiter.getId(), true, AWAITER);
 		}
 	}
+	
+	@Override
+	public UserChecker checkUserByName(String name) throws Exception {
+		Awaiter awaiter = new Awaiter();
+		awaiter.setName(name);
+		
+		Awaiter existAwaiter = awaiterService.findAwaiter(awaiter);
+		
+		if (existAwaiter == null) {
+			User user = new User();
+			user.setName(name);
+			
+			return this.findUser(user);
+		} else {
+			return this.createUserChecker(existAwaiter.getId(), true, AWAITER);
+		}
+	}
 
 
 	private UserChecker findUser(String id) throws Exception {

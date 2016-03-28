@@ -35,6 +35,7 @@
 				<tr>
 					<td>이름(닉네임)</td>
 					<td><input type="text" id="name" name="name" /></td>
+					<td><p id="name_check_msg"></p></td>
 				</tr>
 			</table>
 		</div>
@@ -138,6 +139,11 @@
 		var oPassword = $("#password");
 		var oMessage = $("#confirm_password_check_msg");
 		
+		if (oConfirmPassword.val().length == 0) {
+			oMessage.text("비밀번호 확인을 해주세요.");
+			return;
+		}
+		
 		if (oConfirmPassword.val() === oPassword.val()) {
 			oMessage.text("비밀번호 확인 완료");
 		} else {
@@ -149,6 +155,11 @@
 		var oEmail = $(this);
 		var oMessage = $("#email_check_msg");
 		
+		if (oEmail.val().length == 0) {
+			oMessage.text("이메일을 입력해주세요.");
+			return;
+		}
+		
 		// TODO 이메일 검증
 		
 		// email을 입력하면 ajax를 호출한다.
@@ -156,11 +167,29 @@
 		oMessage.text(oResultEmail.sMessage);
 	});
 	
+	$("#name").on("blur", function() {
+		var oName = $(this);
+		var oMessage = $("#name_check_msg");
+		
+		if (oName.val().length == 0) {
+			oMessage.text("이름을 입력해주세요");
+			return;
+		}
+		
+		var oResultName = isExist(oName.val(), "/search/user/name/", "등록할 수 있는 이름입니다.", "이미 등록된 이름이 존재합니다.");
+		oMessage.text(oResultName.sMessage);
+	});
+	
 	function isExist(data, url, successMessage, failMessage) {
 		var oResult = { 
 				isExist : true,
 				sMessage : "현재 통신에 문제가 생겨 ID를 검증할 수 없습니다!"
 			};
+		
+		if (data.length == 0) {
+			oResult.sMessage = "데이터를 입력해주세요!";
+			return oResult;
+		}
 		
 		if (data.length > 0) {
 			$.ajax({
@@ -241,9 +270,17 @@
 			return;
 		}
 		
-		// TODO 이메일 체크(대기,유저)
+		var oResultEmail = isExist($("#email").val(), "/search/user/email/", "등록할 수 있는 e-mail입니다.", "이미 등록된 e-mail이 존재합니다.");
+		if (oResultEmail.isExist) {
+			alert(oResultEmail.sMessage);
+			return;
+		}
 		
-		// 닉네임 체크 (대기, 유저)
+		var oResultName = isExist($("#name").val(), "/search/user/name/", "등록할 수 있는 이름입니다.", "이미 등록된 이름입니다.");
+		if (oResultName.isExist) {
+			alert(oResultName.sMessage);
+			return;
+		}
 		
 		// 메일은 Asnyc로 따로 보낼까잉?
 				

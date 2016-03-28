@@ -121,6 +121,12 @@ public class UserController {
 		return checkService.checkUserByEmail(email);
 	}
 	
+	@RequestMapping(value = "/search/user/name/{name}")
+	@ResponseBody
+	public UserChecker searchUserName(@PathVariable("name") String name) throws Exception {
+		return checkService.checkUserByName(name);
+	}
+	
 	@RequestMapping(value = "/show/profile", method = RequestMethod.GET)
 	public ModelAndView showProfile() throws Exception {
 		logger.info("### 유저 프로필 보기");
