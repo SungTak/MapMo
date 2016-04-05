@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>MapMo 로그인</title>
+</head>
+<body>
+	<h1>로그인</h1>
+	<form id="signin_form" action="/signin/submit" method="post">
+	<section>
+		<div>
+			아이디 <input type="text" name="id" />
+			비밀번호 <input type="password" name="password" />
+		</div>
+		<div>
+			<p th:text="${message}"></p>
+		</div>
+		<div>
+			<a href="#" id="signin_btn">로그인</a>
+			<a href="/">취소</a>
+		</div>
+	</section>
+	</form>
+	<script src="js/jquery-1.12.0.min.js"></script>
+	<script type="text/javascript">
+		$("#signin_btn").on("click", function(event) {
+			event.preventDefault();
+			
+			$("#signin_form").submit();
+		});
+	</script>
+</body>
+<footer>
+	Copyright 2016-2016 by 테이키. All Rights Reserved. 
+</footer>
+</html>

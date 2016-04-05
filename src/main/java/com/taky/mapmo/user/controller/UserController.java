@@ -71,8 +71,15 @@ public class UserController {
 			return "이미 ID가 존재합니다. 회원가입을 하실 수 없습니다!";
 		}
 		
-		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
+		existUser = checkService.checkUserByEmail(awaiter.getEmail());
+		if (existUser.isExist()) {
+			return "이미 등록된 E-mail이 있습니다. 회원가입을 하실 수 없습니다!";
+		}
 		
+		existUser = checkService.checkUserByName(awaiter.getName());
+		if (existUser.isExist()) {
+			return "이미 등록된 이름이 있습니다. 회원가입을 하실 수 없습니다!";
+		}
 		
 		// 단방향 암호화 확인 
 		awaiter.setPassword(DigestUtils.sha256Hex(awaiter.getPassword() + Constants.CIPHER_SALT));
@@ -86,7 +93,7 @@ public class UserController {
 		Mail mail = new Mail();
 		mail.setTitle("[인증 필요] MapMo 회원가입을 환영합니다!");
 		mail.setTo(awaiter.getEmail());
-		mail.setText("안녕하세요. MapMo에 가입해주셔서 감사합니다. 아래의 인증 URL을 클릭하시면 가입이 완료됩니다! <br>"
+		mail.setText("안녕하세요. MapMo에 가입해주셔서 감사합니다. 아래의 인증 URL을 클릭하시면 가입이 완료됩니다! \n"
 				+ accreditationUrl);
 		
 		mailService.send(mail);
