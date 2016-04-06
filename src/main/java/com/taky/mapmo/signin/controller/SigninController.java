@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.taky.mapmo.common.constant.Constants;
 import com.taky.mapmo.user.model.User;
@@ -33,28 +35,27 @@ public class SigninController {
 		return "signin/signin";
 	}
 	
-	@RequestMapping(value = "/signin/submit", method = RequestMethod.POST)
-	public String submit(@RequestParam("id") String id, @RequestParam("password") String password) throws Exception {
+	@RequestMapping(value = "/signin", method = RequestMethod.POST)
+	public ModelAndView submit(@RequestParam("id") String id, @RequestParam("password") String password) throws Exception {
 		logger.info("### {}님이 로그인을 시도하였습니다", id);
-		//ModelAndView mav = new ModelAndView("redirect:signin/signin");
+		// TIP : 모델앤뷰.. import 경로 잘보자 -_-
+		ModelAndView mav = new ModelAndView("signin/signin");
 		
 		User user = UserService.findUser(id);
 		if (user == null) {
-		//	mav.addObject("message", "등록된 ID가 없습니다.");
-		//	return mav;
-			return "redirect:/signin"; //URL인듯..
+			mav.addObject("message", "등록된 ID가 없습니다.");
+			return mav;
 		}
 		
 		String cipherPassword = DigestUtils.sha256Hex(password + Constants.CIPHER_SALT);
 		
 		if (StringUtils.equals(user.getPassword(), cipherPassword)) {
-		//	mav.setViewName("redirect:main");
-		//	return mav;
+			mav.setViewName("main");
+			return mav;
 		}
 		
-//		mav.addObject("message", "비밀번호가 틀렸습니다.");
-//		return mav;
-		return "redirect:signin/signin";
+		mav.addObject("message", "비밀번호가 틀렸습니다.");
+		return mav;
 	}
 
 	public UserService getUserService() {
