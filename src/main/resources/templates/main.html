@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<title>MapMo</title>
@@ -12,7 +14,8 @@
 		<h1 class="app_name">MAPMO</h1>
 		<p th:text="${say}">MAPMO에 오신걸 환영합니다!</p>
 		<ul class="horizon_list">
-			<li><a href="signin">로그인</a></li>
+			<li sec:authorize="isAnonymous()"><a href="signin">로그인</a></li>
+			<li sec:authorize="hasRole('ROLE_USER')"><a href="signout">로그아웃</a></li>
 			<li><a href="join">가입</a></li>
 		</ul>
 	</div>

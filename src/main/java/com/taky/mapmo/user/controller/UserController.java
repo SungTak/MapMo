@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,7 +84,8 @@ public class UserController {
 		}
 		
 		// 단방향 암호화 확인 
-		awaiter.setPassword(DigestUtils.sha256Hex(awaiter.getPassword() + Constants.CIPHER_SALT));
+		PasswordEncoder passwordEncoder = new StandardPasswordEncoder();
+		awaiter.setPassword(passwordEncoder.encode(awaiter.getPassword()));
 		
 		// 회원 가입 인증 URL만들기
 		String accreditationUrl = SecurityUtils.createAccreditationUrl(awaiter.getId(), new Date());

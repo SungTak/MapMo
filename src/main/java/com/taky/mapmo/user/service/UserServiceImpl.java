@@ -1,6 +1,11 @@
 package com.taky.mapmo.user.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +18,8 @@ import com.taky.mapmo.user.model.User;
  *
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private UserMapper userMapper;
@@ -45,6 +51,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findUser(User user) throws Exception {
 		return userMapper.selectUserBy(user);
+	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+		User user = null;
+		try {
+			user = this.findUser(id);
+		} catch (Exception e) {
+			logger.error("### 유저를 찾는 과정에서 에러가 발생했습니다!", e);
+		}
+		logger.debug(user.getPassword());
+		return user;
 	}
 
 	public UserMapper getUserMapper() {
