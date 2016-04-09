@@ -21,6 +21,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// http://stackoverflow.com/questions/19468209/spring-security-403-error
 		http.csrf().disable();
 		
+		http.sessionManagement().invalidSessionUrl("/");
+		
 		http.authorizeRequests()
 				.antMatchers("/").permitAll()
 				.and()
@@ -29,17 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.usernameParameter("id").passwordParameter("password")
 				.and()
 			.logout()
-				.permitAll();
-		
-		
-//		.logout()                                                                1
-//		.logoutUrl("/my/logout")                                                 2
-//		.logoutSuccessUrl("/my/index")                                           3
-//		.logoutSuccessHandler(logoutSuccessHandler)                              4
-//		.invalidateHttpSession(true)                                             5
-//		.addLogoutHandler(logoutHandler)                                         6
-//		.deleteCookies(cookieNamesToClear)                                       7
-//		.and()
+				.logoutUrl("/signout").permitAll().logoutSuccessUrl("/");
 	}
 	
 	@Autowired

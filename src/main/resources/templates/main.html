@@ -28,15 +28,47 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 		</ul>	
 	</nav>
 </div>
-<div class="main_content">
+<div id="map" class="main_content">
 	<section>
-	지도
+		<div id="naver_map">
+		
+		</div>
 	</section>
 </div>
 
 <script src="js/jquery-1.12.0.min.js"></script>
+<!-- naver map open api -->
+<script src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=DgYEfRDXPdYGwNd99OQA"></script>
 <script type="text/javascript">
+	var oCommonMap = jQuery("#map");
 
+	// naver map config
+	var oOptions = { 
+            point : new nhn.api.map.LatLng(37.5675451, 126.9773356),
+            zoom : 9,
+            enableWheelZoom : true,
+            enableDragPan : true,
+            enableDblClickZoom : false,
+            mapMode : 0,
+            activateTrafficMap : false,
+            activateBicycleMap : false,
+            minMaxLevel : [ 1, 14 ],
+            size : new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height())           
+	};
+	
+	var oMap = new nhn.api.map.Map(document.getElementById('naver_map'), oOptions); 
+
+	var oSlider = new nhn.api.map.ZoomControl();
+    oSlider.setPosition({
+            top : 10,
+            left : 10
+    });
+    
+    oMap.addControl(oSlider);
+    
+    jQuery(window).resize(function() {
+    	oMap.setSize(new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height()));
+    });
 </script>
 </body>
 </html>
