@@ -8,6 +8,7 @@ import com.taky.mapmo.user.model.Awaiter;
 public interface AwaiterMapper {
 	public void insertAwaiter(Awaiter awaiter) throws Exception;
 	public Awaiter selectAwaiter(String id) throws Exception;
+	public Awaiter selectAwaiterBy(Awaiter awaiter) throws Exception;
 	public Awaiter selectAwaiterByUrl(String accreditationUrl) throws Exception;
 	public void deleteAwaiter(String id) throws Exception;
 }

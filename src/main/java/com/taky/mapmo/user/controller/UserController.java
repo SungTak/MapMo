@@ -7,12 +7,15 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,10 +73,19 @@ public class UserController {
 			return "이미 ID가 존재합니다. 회원가입을 하실 수 없습니다!";
 		}
 		
-		//TODO 화면단 방어로직 다시 필요함 서버단체크 필수
-		// 암호화 확인 
+		existUser = checkService.checkUserByEmail(awaiter.getEmail());
+		if (existUser.isExist()) {
+			return "이미 등록된 E-mail이 있습니다. 회원가입을 하실 수 없습니다!";
+		}
 		
+		existUser = checkService.checkUserByName(awaiter.getName());
+		if (existUser.isExist()) {
+			return "이미 등록된 이름이 있습니다. 회원가입을 하실 수 없습니다!";
+		}
 		
+		// 단방향 암호화 확인 
+		PasswordEncoder passwordEncoder = new StandardPasswordEncoder();
+		awaiter.setPassword(passwordEncoder.encode(awaiter.getPassword()));
 		
 		// 회원 가입 인증 URL만들기
 		String accreditationUrl = SecurityUtils.createAccreditationUrl(awaiter.getId(), new Date());
@@ -84,7 +96,7 @@ public class UserController {
 		Mail mail = new Mail();
 		mail.setTitle("[인증 필요] MapMo 회원가입을 환영합니다!");
 		mail.setTo(awaiter.getEmail());
-		mail.setText("안녕하세요. MapMo에 가입해주셔서 감사합니다. 아래의 인증 URL을 클릭하시면 가입이 완료됩니다! <br>"
+		mail.setText("안녕하세요. MapMo에 가입해주셔서 감사합니다. 아래의 인증 URL을 클릭하시면 가입이 완료됩니다! \n"
 				+ accreditationUrl);
 		
 		mailService.send(mail);
@@ -111,6 +123,18 @@ public class UserController {
 	@ResponseBody
 	public UserChecker searchUserId(@PathVariable("id") String id) throws Exception {
 		return checkService.checkUser(id);
+	}
+	
+	@RequestMapping(value = "/search/user/email/{email:.+}")
+	@ResponseBody
+	public UserChecker searchUserEmail(@PathVariable("email") String email) throws Exception {
+		return checkService.checkUserByEmail(email);
+	}
+	
+	@RequestMapping(value = "/search/user/name/{name}")
+	@ResponseBody
+	public UserChecker searchUserName(@PathVariable("name") String name) throws Exception {
+		return checkService.checkUserByName(name);
 	}
 	
 	@RequestMapping(value = "/show/profile", method = RequestMethod.GET)

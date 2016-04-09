@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>MapMo 로그인</title>
+</head>
+<body>
+	<h1>로그인</h1>
+	<form id="signin_form" th:action="@{/signin}" method="post">
+	<section>
+		<div>
+			아이디 <input type="text" name="id" />
+			비밀번호 <input type="password" name="password" />
+		</div>
+		
+		<div th:if="${param.error}">
+        	비밀번호 혹은 ID가 틀렸습니다.
+        </div>
+        <div th:if="${param.logout}">
+            You have been logged out.
+        </div>
+
+		<div>
+			<a href="#" id="signin_btn">로그인</a>
+			<a href="/">취소</a>
+		</div>
+	</section>
+	</form>
+	<script src="js/jquery-1.12.0.min.js"></script>
+	<script type="text/javascript">
+		$("#signin_btn").on("click", function(event) {
+			event.preventDefault();
+			
+			$("#signin_form").submit();
+		});
+	</script>
+</body>
+<footer>
+	Copyright 2016-2016 by 테이키. All Rights Reserved. 
+</footer>
+</html>
