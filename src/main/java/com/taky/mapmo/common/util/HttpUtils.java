@@ -13,13 +13,8 @@ import org.slf4j.LoggerFactory;
 public class HttpUtils {
 	private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
 
-	public static String request(String requestUrl) {
+	public static String request(HttpGet request) {
 		CloseableHttpClient client = HttpClientBuilder.create().build();
-		HttpGet request = new HttpGet(requestUrl);
-
-		// TODO 키 숨기자 -ㅅ-ㅋ
-		request.addHeader("X-Naver-Client-Id", "");
-		request.addHeader("X-Naver-Client-Secret", "");
 
 		try {
 			HttpResponse response = client.execute(request);
