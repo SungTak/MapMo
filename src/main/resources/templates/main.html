@@ -40,6 +40,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <!-- naver map open api -->
 <script src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=DgYEfRDXPdYGwNd99OQA"></script>
 <script type="text/javascript">
+//<![CDATA[
 	var oCommonMap = jQuery("#map");
 
 	// naver map config
@@ -73,36 +74,27 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     		method : "GET",
     		dataType : "json"
     	}).done(function(data) {
-    		alert("성공" + data);
+    		var addresses = data.result.items;
+    		var address = {};
+    		for (var i = 0; i < addresses.length; i++) {
+    			if (addresses[i].isRoadAddress) {
+	    			address["roadAddress"] = addresses[i].address;
+    			} else {
+	    			address["oldAddress"] = addresses[i].address;
+    			}
+    		}
+    		
+    		alert("구주소(지번) : " + address.oldAddress + "\n 도로명주소 : " + address.roadAddress);
+    		
     	}).fail(function(error) {
     		alert("실패" + error);
     	});
-    	
-    	
-    	/* jQuery.ajax({
-    		url : "https://openapi.naver.com/v1/map/reversegeocode",
-    		method : "GET",
-    		data : {
-    			query : pos.point.getX() + "," + pos.point.getY(),
-    			encoding : "utf-8"
-    		},
-    		dataType : "json",
-    		callback : "resultNaverMap"
-    	}).done(function(data) {
-    		console.log(data);
-    	}).fail(function(error) {
-    		console.log(error);
-    		alert("네이버 지도에서 응답이 없습니다.");
-    	}); */
     });
     
     jQuery(window).resize(function() {
     	oMap.setSize(new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height()));
     });
-    
-    function resultNaverMap() {
-    	
-    }
+ //]]>
 </script>
 </body>
 </html>
