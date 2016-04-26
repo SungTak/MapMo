@@ -7,6 +7,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	<title>MapMo</title>
 	
 	<link rel="stylesheet" type="text/css" href="css/common.css" />
+	<link rel="stylesheet" type="text/css" href="css/jquery/ui/1.11.4/jquery-ui.min.css" />
 </head>
 <body>
 <div class="left_menu">
@@ -36,64 +37,99 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	</section>
 </div>
 
+<div id="popup"></div>
+<script id="template_popup" type="text/template">
+	<div>
+		<p>구주소(지번) : ##oldAddress##</p>
+		<p>도로명주소 : ##roadAddress##</p>
+	</div>
+</script>
 <script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/jquery/ui/1.11.4/jquery-ui.min.js"></script>
 <!-- naver map open api -->
 <script src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=DgYEfRDXPdYGwNd99OQA"></script>
 <script type="text/javascript">
 //<![CDATA[
-	var oCommonMap = jQuery("#map");
-
-	// naver map config
-	var oOptions = { 
-            point : new nhn.api.map.LatLng(37.5675451, 126.9773356),
-            zoom : 9,
-            enableWheelZoom : true,
-            enableDragPan : true,
-            enableDblClickZoom : false,
-            mapMode : 0,
-            activateTrafficMap : false,
-            activateBicycleMap : false,
-            minMaxLevel : [ 1, 14 ],
-            size : new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height())           
-	};
+	jQuery(document).ready(function() {
+		var oCommonMap = jQuery("#map");
 	
-	var oMap = new nhn.api.map.Map(document.getElementById('naver_map'), oOptions); 
-
-	// zoom in/out
-	var oSlider = new nhn.api.map.ZoomControl();
-    oSlider.setPosition({
-            top : 10,
-            left : 10
-    });
-    
-    oMap.addControl(oSlider);
+		// naver map config
+		var oOptions = { 
+	            point : new nhn.api.map.LatLng(37.5675451, 126.9773356),
+	            zoom : 9,
+	            enableWheelZoom : true,
+	            enableDragPan : true,
+	            enableDblClickZoom : false,
+	            mapMode : 0,
+	            activateTrafficMap : false,
+	            activateBicycleMap : false,
+	            minMaxLevel : [ 1, 14 ],
+	            size : new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height())           
+		};
+		
+		var oMap = new nhn.api.map.Map(document.getElementById('naver_map'), oOptions); 
 	
-    oMap.attach("click", function(pos) {
-    	jQuery.ajax({
-    		url : "/naver/search/address/x/"+ pos.point.getX() + "/y/" + pos.point.getY(),
-    		method : "GET",
-    		dataType : "json"
-    	}).done(function(data) {
-    		var addresses = data.result.items;
-    		var address = {};
-    		for (var i = 0; i < addresses.length; i++) {
-    			if (addresses[i].isRoadAddress) {
-	    			address["roadAddress"] = addresses[i].address;
-    			} else {
-	    			address["oldAddress"] = addresses[i].address;
-    			}
-    		}
-    		
-    		alert("구주소(지번) : " + address.oldAddress + "\n 도로명주소 : " + address.roadAddress);
-    		
-    	}).fail(function(error) {
-    		alert("실패" + error);
-    	});
-    });
-    
-    jQuery(window).resize(function() {
-    	oMap.setSize(new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height()));
-    });
+		// zoom in/out
+		var oSlider = new nhn.api.map.ZoomControl();
+	    oSlider.setPosition({
+	            top : 10,
+	            left : 10
+	    });
+	    
+	    oMap.addControl(oSlider);
+	    
+		
+	    oMap.attach("click", function(pos) {
+		    var oWindowInfo = new nhn.api.map.InfoWindow();
+	    	oWindowInfo.setVisible(true);
+	    	oWindowInfo.setPoint(pos.point);
+		    
+		    
+		    jQuery("#popup").text("");
+	    	
+	    	jQuery.ajax({
+	    		url : "/naver/search/address/x/"+ pos.point.getX() + "/y/" + pos.point.getY(),
+	    		method : "GET",
+	    		dataType : "json"
+	    	}).done(function(data) {
+	    		var addresses = data.result.items;
+	    		var address = {
+    				roadAddress : "주소 없음",
+    				oldAddress : "주소 없음"
+	    		};
+	    		
+	    		for (var i = 0; i < addresses.length; i++) {
+	    			if (addresses[i].isRoadAddress) {
+		    			address.roadAddress = addresses[i].address;
+	    			} else {
+		    			address.oldAddress = addresses[i].address;
+	    			}
+	    		}
+	    		
+	    		var templatePopup = jQuery("#template_popup").text();
+	    		templatePopup = templatePopup.replace("##oldAddress##", address.oldAddress);
+	    		templatePopup = templatePopup.replace("##roadAddress##", address.roadAddress);
+	    		
+	    		jQuery("#popup").append(templatePopup);
+	    		
+	    		jQuery("#popup").dialog({
+	    			width : 300,
+	    			height : 250
+	    		});
+	    		
+	    		oWindowInfo.setContent(templatePopup);
+	    		oMap.addOverlay(oWindowInfo);
+	    		
+	    	}).fail(function(error) {
+	    		alert("실패" + error);
+	    	});
+	    });
+	    
+	    jQuery(window).resize(function() {
+	    	oMap.setSize(new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height()));
+	    });
+	});
+           
  //]]>
 </script>
 </body>
