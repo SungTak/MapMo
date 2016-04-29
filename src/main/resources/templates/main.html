@@ -7,6 +7,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	<title>MapMo</title>
 	
 	<link rel="stylesheet" type="text/css" href="css/common.css" />
+	<link rel="stylesheet" type="text/css" href="css/popup.css" />
 	<link rel="stylesheet" type="text/css" href="css/jquery/ui/1.11.4/jquery-ui.min.css" />
 </head>
 <body>
@@ -36,12 +37,15 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 		</div>
 	</section>
 </div>
-
 <div id="popup"></div>
 <script id="template_popup" type="text/template">
-	<div>
+	<div class="popup_mapinfo">
 		<p>구주소(지번) : ##oldAddress##</p>
 		<p>도로명주소 : ##roadAddress##</p>
+		<div>
+			<a id="address_feedback_btn" href="#">평가하기</a>
+			<a id="address_cancel_btn" href="#">취소하기</a>
+		</div>
 	</div>
 </script>
 <script src="js/jquery-1.12.0.min.js"></script>
@@ -79,11 +83,11 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	    oMap.addControl(oSlider);
 	    
 		
-	    oMap.attach("click", function(pos) {
-		    var oWindowInfo = new nhn.api.map.InfoWindow();
-	    	oWindowInfo.setVisible(true);
+	    var oWindowInfo = new nhn.api.map.InfoWindow();
+    	oWindowInfo.setVisible(true);
+
+    	oMap.attach("click", function(pos) {
 	    	oWindowInfo.setPoint(pos.point);
-		    
 		    
 		    jQuery("#popup").text("");
 	    	
@@ -110,16 +114,21 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	    		templatePopup = templatePopup.replace("##oldAddress##", address.oldAddress);
 	    		templatePopup = templatePopup.replace("##roadAddress##", address.roadAddress);
 	    		
-	    		jQuery("#popup").append(templatePopup);
-	    		
-	    		jQuery("#popup").dialog({
-	    			width : 300,
-	    			height : 250
-	    		});
-	    		
 	    		oWindowInfo.setContent(templatePopup);
 	    		oMap.addOverlay(oWindowInfo);
 	    		
+	    		<!-- 팝업 이벤트 -->
+	    		jQuery("#address_feedback_btn").on("click", function(event) {
+	    			event.preventDefault();
+	    			
+	    			alert("감사합니다!");
+	    		});
+
+	    		jQuery("#address_cancel_btn").on("click", function(event) {
+	    			event.preventDefault();
+	    			
+	    			oMap.removeOverlay(oWindowInfo);
+	    		});
 	    	}).fail(function(error) {
 	    		alert("실패" + error);
 	    	});
