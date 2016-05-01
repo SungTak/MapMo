@@ -40,8 +40,14 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <div id="popup"></div>
 <script id="template_popup" type="text/template">
 	<div class="popup_mapinfo">
-		<p>구주소(지번) : ##oldAddress##</p>
-		<p>도로명주소 : ##roadAddress##</p>
+		<div>
+			<p>구주소(지번) : ##oldAddress##</p>
+			<p>도로명주소 : ##roadAddress##</p>
+		</div>
+		<div>
+			<p>평가점수 : ##evaluateScore##</p>
+			평가하기 <input type="number" max="100" min="0" placeholder="0 ~ 100점까지 평가 가능합니다. "/>
+		</div>
 		<div>
 			<a id="address_feedback_btn" href="#">평가하기</a>
 			<a id="address_cancel_btn" href="#">취소하기</a>
@@ -89,7 +95,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     	oMap.attach("click", function(pos) {
 	    	oWindowInfo.setPoint(pos.point);
 		    
-		    jQuery("#popup").text("");
+	    	initPopup();
 	    	
 	    	jQuery.ajax({
 	    		url : "/naver/search/address/x/"+ pos.point.getX() + "/y/" + pos.point.getY(),
@@ -110,25 +116,10 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	    			}
 	    		}
 	    		
-	    		var templatePopup = jQuery("#template_popup").text();
-	    		templatePopup = templatePopup.replace("##oldAddress##", address.oldAddress);
-	    		templatePopup = templatePopup.replace("##roadAddress##", address.roadAddress);
-	    		
-	    		oWindowInfo.setContent(templatePopup);
+	    		oWindowInfo.setContent(fullPopupInfo(address));
 	    		oMap.addOverlay(oWindowInfo);
 	    		
-	    		<!-- 팝업 이벤트 -->
-	    		jQuery("#address_feedback_btn").on("click", function(event) {
-	    			event.preventDefault();
-	    			
-	    			alert("감사합니다!");
-	    		});
-
-	    		jQuery("#address_cancel_btn").on("click", function(event) {
-	    			event.preventDefault();
-	    			
-	    			oMap.removeOverlay(oWindowInfo);
-	    		});
+	    		addEventPopup();
 	    	}).fail(function(error) {
 	    		alert("실패" + error);
 	    	});
@@ -138,6 +129,36 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	    	oMap.setSize(new nhn.api.map.Size(oCommonMap.width(), oCommonMap.height()));
 	    });
 	});
+	
+	function initPopup() {
+		jQuery("#popup").text("");
+	}
+	
+	/*
+	 * 팝업창에 정보를 채웁니다.
+	 * 
+	 * 매개변수 : oldAddress, roadAddress 프로퍼티를 가지고 있는 리터럴 객체
+	 */
+	function fullPopupInfo(address) {
+		var templatePopup = jQuery("#template_popup").text();
+		templatePopup = templatePopup.replace("##oldAddress##", address.oldAddress);
+		templatePopup = templatePopup.replace("##roadAddress##", address.roadAddress);
+		return templatePopup;
+	}
+	
+	function addEventPopup() {
+		jQuery("#address_feedback_btn").on("click", function(event) {
+			event.preventDefault();
+			
+			alert("감사합니다!");
+		});
+
+		jQuery("#address_cancel_btn").on("click", function(event) {
+			event.preventDefault();
+			
+			oMap.removeOverlay(oWindowInfo);
+		});
+	}
            
  //]]>
 </script>
