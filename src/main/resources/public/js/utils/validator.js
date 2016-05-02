@@ -45,3 +45,21 @@ Validator.prototype.checkPassword = function(password) {
 	}
 	return constants.user.PASSWORD_VALID;
 }
+Validator.prototype.checkNumber = function(number) {
+	if (typeof number == "number") {
+		return true;
+	}
+	
+	return false;
+}
+Validator.prototype.checkNumberRange = function(number, min, max) {
+	if (this.checkNumber === false) {
+		return false;
+	}
+	
+	if (number >= min && number <= max) {
+		return true;
+	}
+	
+	return false;
+}

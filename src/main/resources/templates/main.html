@@ -46,7 +46,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 		</div>
 		<div>
 			<p>평가점수 : ##evaluateScore##</p>
-			평가하기 <input type="number" max="100" min="0" placeholder="0 ~ 100점까지 평가 가능합니다. "/>
+			평가하기 <input id="feedback_score" type="number" max="100" min="0" placeholder="0 ~ 100점까지 평가 가능합니다. "/>
 		</div>
 		<div>
 			<a id="address_feedback_btn" href="#">평가하기</a>
@@ -88,11 +88,11 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	    
 	    oMap.addControl(oSlider);
 	    
-		
+		// 같은 객체로 하지 않으면 클릭할 때마다 윈도우 정보창이 새로 생긴다.
 	    var oWindowInfo = new nhn.api.map.InfoWindow();
-    	oWindowInfo.setVisible(true);
 
     	oMap.attach("click", function(pos) {
+	    	oWindowInfo.setVisible(true);
 	    	oWindowInfo.setPoint(pos.point);
 		    
 	    	initPopup();
@@ -111,15 +111,26 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	    		for (var i = 0; i < addresses.length; i++) {
 	    			if (addresses[i].isRoadAddress) {
 		    			address.roadAddress = addresses[i].address;
+		    			address.roadAddressPoint = addresses[i].point;
 	    			} else {
 		    			address.oldAddress = addresses[i].address;
+		    			address.oldAddressPoint = addresses[i].point;
 	    			}
 	    		}
+	    		
+	    		console.log(address);
 	    		
 	    		oWindowInfo.setContent(fullPopupInfo(address));
 	    		oMap.addOverlay(oWindowInfo);
 	    		
-	    		addEventPopup();
+	    		jQuery("#address_cancel_btn").on("click", function(event) {
+	    			event.preventDefault();
+	    			
+	    			oWindowInfo.setVisible(false);
+	    			//oMap.removeOverlay(oWindowInfo); // -_- 리무브가 안되네??
+	    		});
+	    		
+	    		addEventPopup(address);
 	    	}).fail(function(error) {
 	    		alert("실패" + error);
 	    	});
@@ -146,17 +157,35 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 		return templatePopup;
 	}
 	
-	function addEventPopup() {
+	// address는 API에서 받은 주소 정보를 가지고 있다.
+	function addEventPopup(address) {
 		jQuery("#address_feedback_btn").on("click", function(event) {
 			event.preventDefault();
 			
-			alert("감사합니다!");
-		});
-
-		jQuery("#address_cancel_btn").on("click", function(event) {
-			event.preventDefault();
+			var x, y;
+			// 도로명 주소가 없는 곳이 있어서 없으면 구주소의 좌표를 Key로 지정한다.
+			if (address.hasOwnProperty("roadAddressPoint")) {
+				x = address.roadAddressPoint.x;
+				y = address.roadAddressPoint.y;
+			} else {
+				x = address.oldAddressPoint.x;
+				y = address.oldAddressPoint.y;
+			}
 			
-			oMap.removeOverlay(oWindowInfo);
+			// 스코어 (검증 필요 0 ~ 100)
+			var score = jQuery("#feedback_score").val();
+			
+			// ajax호출 저장
+			jQuery.ajax({
+				url : "/feedback/store,
+				method : "POST",
+				data : {
+					x : x,
+					y : y,
+					score : score 
+				},
+				dataType : "string"
+			}).done().fail();
 		});
 	}
            
