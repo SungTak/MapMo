@@ -53,6 +53,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return userMapper.selectUserBy(user);
 	}
 	
+	/**
+	 * 로그인을 시도하면 해당 메서드가 호출되어 유저 정보를 찾는다.
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		User user = null;
@@ -61,7 +64,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		} catch (Exception e) {
 			logger.error("### 유저를 찾는 과정에서 에러가 발생했습니다!", e);
 		}
-		logger.debug(user.getPassword());
 		return user;
 	}
 
