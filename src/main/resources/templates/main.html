@@ -15,19 +15,22 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	<div>
 		<h1 class="app_name">MAPMO</h1>
 		<p th:text="${say}">MAPMO에 오신걸 환영합니다!</p>
-		<div sec:authorize="hasRole('ROLE_USER')">
-			<ul class="horizon_list">
-				<li><img src="http://i19.photobucket.com/albums/b155/akikoprism87/oie_transparent-9-3.png" width="100" height="100" /></li>
-				<li><p sec:authentication="name">님</p></li> 
-			</ul>
-		</div>
-		<div>
-			<ul class="horizon_list">
-				<li sec:authorize="isAnonymous()"><a href="signin">로그인</a></li>
-				<li sec:authorize="hasRole('ROLE_USER')"><a href="signout">로그아웃</a></li>
-				<li><a href="join">가입</a></li>
-			</ul>
-		</div>
+		<form id="user_form">
+			<div sec:authorize="hasRole('ROLE_USER')">
+				<ul class="horizon_list">
+					<li><img src="http://i19.photobucket.com/albums/b155/akikoprism87/oie_transparent-9-3.png" width="100" height="100" /></li>
+					<li><span id="user_name" sec:authentication="name"></span>님</li>
+				</ul>
+			</div>
+			<div>
+				<ul class="horizon_list">
+					<li sec:authorize="isAnonymous()"><a href="signin">로그인</a></li>
+					<li sec:authorize="isAnonymous()"><a href="join">가입</a></li>
+					<li sec:authorize="hasRole('ROLE_USER')"><a href="signout">로그아웃</a></li>
+					<li sec:authorize="hasRole('ROLE_USER')"><a id="user_modify_btn" href="#">수정</a></li>
+				</ul>
+			</div>
+		</form>
 	</div>
 	<nav>
 		<ul>
@@ -65,11 +68,24 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <script src="js/jquery-1.12.0.min.js"></script>
 <script src="js/jquery/ui/1.11.4/jquery-ui.min.js"></script>
 <script src="js/utils/validator.js"></script>
+<script src="js/user/user.js"></script>
+<script src="js/user/userEventHandler.js"></script>
 <!-- naver map open api -->
 <script src="http://openapi.map.naver.com/openapi/v2/maps.js?clientId=DgYEfRDXPdYGwNd99OQA"></script>
 <script type="text/javascript">
 //<![CDATA[
 	jQuery(document).ready(function() {
+		// 유저 이벤트 핸들러 등록
+		var user = new MapMo.User();
+		user.setName(jQuery("#user_name").val());
+		user.setForm(jQuery("#user_form"));
+		
+		var userEventHandler = new MapMo.UserEventHandler();
+		userEventHandler.modifyByName(jQuery("#user_modify_btn"), "click", user);
+		
+		
+		
+		////////// Map 관련 스크립트 ////////
 		var oValidator = new Validator();
 		var oCommonMap = jQuery("#map");
 	
@@ -185,13 +201,13 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 			// 스코어 (검증 필요 0 ~ 100)
 			var score = jQuery("#feedback_score").val();
 			if (validator.checkNumberRange(score, 0, 100) == false) {
-				alert("평가 점수는 0 ~ 100점만 가능합니다. 확인해주세요.")
+				alert("평가 점수는 0 ~ 100점만 가능합니다. 확인해주세요.");
 				return;
 			}
 			
 			// ajax호출 저장 및 ID는???
 			jQuery.ajax({
-				url : "/feedback/store,
+				url : "/feedback/store",
 				method : "POST",
 				data : {
 					x : x,

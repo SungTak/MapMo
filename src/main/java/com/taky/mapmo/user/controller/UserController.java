@@ -137,6 +137,13 @@ public class UserController {
 		return checkService.checkUserByName(name);
 	}
 	
+	@RequestMapping(value = "/modify/user", method = RequestMethod.POST)
+	public String modifyUserByName(@RequestParam("user.name") String name) throws Exception {
+		logger.debug("### 유저 정보 수정 요청! {}", name);
+		
+		return null;
+	}
+	
 	@RequestMapping(value = "/show/profile", method = RequestMethod.GET)
 	public ModelAndView showProfile() throws Exception {
 		logger.info("### 유저 프로필 보기");
