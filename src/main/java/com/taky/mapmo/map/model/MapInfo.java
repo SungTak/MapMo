@@ -10,13 +10,22 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("mapInfo")
 public class MapInfo {
-	private Address address;
+	private Address gibunAddress;
+	private Address roadAddress;
 
-	public Address getAddress() {
-		return address;
+	public Address getGibunAddress() {
+		return gibunAddress;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+	public void setGibunAddress(Address gibunAddress) {
+		this.gibunAddress = gibunAddress;
+	}
+
+	public Address getRoadAddress() {
+		return roadAddress;
+	}
+
+	public void setRoadAddress(Address roadAddress) {
+		this.roadAddress = roadAddress;
 	}
 }

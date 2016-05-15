@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.taky.mapmo.map.mapper.MapMapper">
-	<select id="selectMapInfo" parameterType="mapInfo" resultType="mapInfo">
+	<select id="selectMapByRangePoint" parameterType="address" resultType="mapInfo">
 		SELECT id, x, y, z, road_address, gibun_address
 		FROM map
-		WHERE #x# BETWEEN min_x AND max_x 
-		AND #y# BETWEEN min_y AND max_y
+		WHERE #{x} BETWEEN min_x AND max_x 
+		AND #{y} BETWEEN min_y AND max_y
+	</select>
+	
+	<select id="selectMap" parameterType="mapInfo" resultType="mapInfo">
+		SELECT id, x, y, z, road_address, gibun_address
+		FROM map
+		<where>
+			<choose>
+				<when test="roadAddress != null">
+					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(roadAddress.x)">
+						AND x = #{roadAddress.x}
+					</if>
+					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(roadAddress.y)">
+						AND y = #{roadAddress.y}
+					</if>
+				</when>
+				<otherwise>
+					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(gibunAddress.x)">
+						AND x = #{gibunAddress.x}
+					</if>
+					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(gibunAddress.y)">
+						AND y = #{gibunAddress.y}
+					</if>
+				</otherwise>
+			</choose>
+		</where>
 	</select>
 </mapper>

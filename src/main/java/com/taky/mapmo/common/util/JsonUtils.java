@@ -7,6 +7,7 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 
 import com.taky.mapmo.map.model.Address;
+import com.taky.mapmo.map.model.AddressType;
 import com.taky.mapmo.map.model.MapInfo;
 
 public class JsonUtils {
@@ -64,26 +65,27 @@ public class JsonUtils {
 		Map<String, Object> result = (Map<String, Object>) resultMap.get("result");
 		List<Map<String, Object>> items = (List<Map<String, Object>>) result.get("items");
 
-		Address address = new Address();
+		Address gibunAddress = new Address(AddressType.GIBUN);
+		Address roadAddress = new Address(AddressType.ROAD);
 		for (Map<String, Object> naverAddress : items) {
 			boolean isRoadAddress = (boolean) naverAddress.get("isRoadAddress");
 			Map<String, Object> point = (Map<String, Object>) naverAddress.get("point");
 			
 			// 도로명 주소를 우선으로 세팅한다.
 			if (isRoadAddress) {
-				address.setRoadAddress((String) naverAddress.get("address"));
-				address.setX(Double.valueOf((String) point.get("x")));
-				address.setY(Double.valueOf((String) point.get("y")));
+				roadAddress.setAddress((String) naverAddress.get("address"));
+				roadAddress.setX(Double.valueOf((String) point.get("x")));
+				roadAddress.setY(Double.valueOf((String) point.get("y")));
 			} else {
-				address.setGibunAddress((String) naverAddress.get("address"));
-				address.setX(Double.valueOf((String) point.get("x")));
-				address.setY(Double.valueOf((String) point.get("y")));
+				gibunAddress.setAddress((String) naverAddress.get("address"));
+				gibunAddress.setX(Double.valueOf((String) point.get("x")));
+				gibunAddress.setY(Double.valueOf((String) point.get("y")));
 			}
 		}
-		// TODO 모델 분리가 필요할듯 -_-ㅋ address -> roadAddress, gibunAddress
 		
 		MapInfo mapInfo = new MapInfo();
-		mapInfo.setAddress(address);
+		mapInfo.setGibunAddress(gibunAddress);
+		mapInfo.setRoadAddress(roadAddress);
 		return mapInfo;
 	}
 }
