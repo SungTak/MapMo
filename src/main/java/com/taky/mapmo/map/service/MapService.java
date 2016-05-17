@@ -46,4 +46,6 @@ public interface MapService {
 	 * @throws Exception
 	 */
 	public boolean modifyMap(MapInfo mapInfo) throws Exception;
+	
+	public boolean insertMap(MapInfo mapInfo) throws Exception;
 }

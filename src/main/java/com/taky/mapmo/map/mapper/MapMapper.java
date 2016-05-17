@@ -10,4 +10,6 @@ public interface MapMapper {
 	public MapInfo selectMapByRangePoint(Address address) throws Exception;
 	
 	public MapInfo selectMap(MapInfo mapInfo) throws Exception;
+	
+	public void insertMap(MapInfo mapInfo) throws Exception;
 }

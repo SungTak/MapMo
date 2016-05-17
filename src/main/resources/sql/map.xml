@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.taky.mapmo.map.mapper.MapMapper">
 	<select id="selectMapByRangePoint" parameterType="address" resultType="mapInfo">
+		/* mapmapper.selectMapByRangePoint */
 		SELECT id, x, y, z, road_address, gibun_address
 		FROM map
 		WHERE #{x} BETWEEN min_x AND max_x 
@@ -9,6 +10,7 @@
 	</select>
 	
 	<select id="selectMap" parameterType="mapInfo" resultType="mapInfo">
+		/* mapmapper.selectMap */
 		SELECT id, x, y, z, road_address, gibun_address
 		FROM map
 		<where>
@@ -32,4 +34,29 @@
 			</choose>
 		</where>
 	</select>
+	
+	<insert id="insertMap" parameterType="mapInfo">
+		/* mapmapper.insertMap */
+		INSERT INTO map(
+			x,
+			y,
+			z,
+			road_address,
+			gibun_address,
+			min_x,
+			max_x,
+			min_y,
+			max_y
+		) VALUES (
+			#{x},
+			#{y},
+			#{z},
+			#{roadAddress.address},
+			#{gibunAddress.address},
+			#{minX},
+			#{maxX},
+			#{minY},
+			#{maxY}
+		)
+	</insert>
 </mapper>
