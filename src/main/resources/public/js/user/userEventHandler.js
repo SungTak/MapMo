@@ -26,10 +26,10 @@ MapMo.UserEventHandler.prototype.modifyByName = function($target, sEvent, oUser)
 		return result;
 	}
 	
-	if (oUser instanceof MapMo.User) {
+	if ((oUser instanceof MapMo.User) === false) {
 		result.message = "유저 객체 타입이 올바르지 않습니다!";
 		return result;
 	}
 	
-	$target.on(sEvent, oUser.modfiyByName);
+	$target.on(sEvent, { "user" : oUser	}, oUser.modifyByName);
 }

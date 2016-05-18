@@ -21,20 +21,23 @@ MapMo.User = function() {
  * @param event 객체
  */
 MapMo.User.prototype.modifyByName = function(event) {
-	if (this.sName.length == 0) {
+	var oUser = event.data.user;
+	
+	if (oUser == "undefined" || oUser.sName.length == 0) {
 		return {
 			"message" : "유저 이름이 존재하지 않습니다!",
 			"isValid" : false
 		};
 	}
 	
-	event.defaultPrevent();
+	event.preventDefault();
 	
-	var userName = jQuery("<input>").attr("type", "hidden").attr("name", "user.name").val(this.sName);
+	var userName = jQuery("<input>").attr("type", "hidden").attr("name", "user.name").val(oUser.sName);
 	
-	this.form.action = "/modify/user";
-	this.form.method = "post";
-	this.form.sumbit();
+	// localhost/?로됨 -_-?
+	oUser.oForm.action = "/modify/user";
+	oUser.oForm.method = "post";
+	oUser.oForm.submit();
 }
 MapMo.User.prototype.setName = function(sName) {
 	this.sName = sName;

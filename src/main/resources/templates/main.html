@@ -77,7 +77,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	jQuery(document).ready(function() {
 		// 유저 이벤트 핸들러 등록
 		var user = new MapMo.User();
-		user.setName(jQuery("#user_name").val());
+		user.setName(jQuery("#user_name").text());
 		user.setForm(jQuery("#user_form"));
 		
 		var userEventHandler = new MapMo.UserEventHandler();
