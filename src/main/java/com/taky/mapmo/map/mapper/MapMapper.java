@@ -12,4 +12,6 @@ public interface MapMapper {
 	public MapInfo selectMap(MapInfo mapInfo) throws Exception;
 	
 	public void insertMap(MapInfo mapInfo) throws Exception;
+	
+	public void updateMap(MapInfo mapInfo) throws Exception;
 }

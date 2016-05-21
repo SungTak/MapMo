@@ -59,4 +59,21 @@
 			#{maxY}
 		)
 	</insert>
+	
+	<update id="updateMap" parameterType="mapInfo">
+		/* mapmapper.updateMap */
+		UPDATE map SET 
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(minX)">
+			min_x = #{minX}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(maxX)">
+			max_x = #{maxX}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(minY)">
+			min_y = #{minY}
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(maxY)">
+			max_y = #{maxY}
+		</if>
+	</update>
 </mapper>

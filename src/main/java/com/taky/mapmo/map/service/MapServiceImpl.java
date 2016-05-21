@@ -47,10 +47,25 @@ public class MapServiceImpl implements MapService {
 			// 요청 좌표들에 대한 데이터를 우리 DB에 저장하기(없으면)
 			this.insertMap(mapInfo);
 		} else {
-			// 있으면 업데이트만, 서비스레이어에서 처리하자.
+			MapInfo modifyPoint = new MapInfo();
 			
-			// 업데이트는 숫자 비교로 min, max구별해야할듯.
+			if (mapMoMapInfo.getMaxX() < mapInfo.getMaxX()) {
+				modifyPoint.setMaxX(mapInfo.getMaxX());
+			}
 			
+			if (mapMoMapInfo.getMinX() > mapInfo.getMinX()) {
+				modifyPoint.setMinX(mapInfo.getMinX());
+			}
+			
+			if (mapMoMapInfo.getMaxY() < mapInfo.getMaxY()) {
+				modifyPoint.setMaxY(mapInfo.getMaxY());
+			}
+			
+			if (mapMoMapInfo.getMinY() > mapInfo.getMinY()) {
+				modifyPoint.setMinY(mapInfo.getMinY());
+			}
+			
+			this.modifyMapPoint(modifyPoint);
 		}
 		
 		return false;
@@ -61,10 +76,27 @@ public class MapServiceImpl implements MapService {
 		try {
 			mapMapper.insertMap(mapInfo);
 			return true;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			logger.error("### map을 신규추가하는 과정에서 sql 에러가 발생하였습니다!", e);
 			return false;
 		}
 	}
-
+	
+	/**
+	 * 맵의 좌표를 수정한다.
+	 * 트랜잭션이 되어 있지 않은 메서드이므로 private처리되어 있다.
+	 * 
+	 * @param mapInfo
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean modifyMapPoint(MapInfo mapInfo) throws Exception {
+		try {
+			mapMapper.updateMap(mapInfo);
+			return true;
+		} catch (SQLException e) {
+			logger.error("### map의 좌표를 수정하는 과정에서 sql 에러가 발생하였습니다!", e);
+			return false;
+		}
+	}
 }
