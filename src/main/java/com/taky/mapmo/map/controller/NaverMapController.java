@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.taky.mapmo.common.util.HttpUtils;
 import com.taky.mapmo.common.util.JsonUtils;
+import com.taky.mapmo.common.util.ModelConverter;
 import com.taky.mapmo.map.model.Address;
 import com.taky.mapmo.map.model.MapInfo;
 import com.taky.mapmo.map.service.MapService;
@@ -61,9 +62,8 @@ public class NaverMapController {
 				
 				return naverMapJson;
 			} else {
-				// 널이 아니면 여기서 처리합세 혹은 try안으로 
 				
-				return "";
+				return ModelConverter.convertTo(mapInfo).toString();
 			}		
 			
 		} catch (NumberFormatException e) {
