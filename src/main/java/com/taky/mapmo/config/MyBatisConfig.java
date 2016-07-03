@@ -25,7 +25,8 @@ public class MyBatisConfig {
 		// http://stackoverflow.com/questions/25405167/finding-resources-with-pathmatchingresourcepatternresolver-and-urlclassloader-in
 		sessionFactory.setMapperLocations(new Resource[] {
 				new ClassPathResource("sql/user.xml"),
-				new ClassPathResource("sql/awaiter.xml")
+				new ClassPathResource("sql/awaiter.xml"),
+				new ClassPathResource("sql/map.xml")
 		});
 		
 		sessionFactory.setTypeAliasesPackage("com.taky.mapmo");

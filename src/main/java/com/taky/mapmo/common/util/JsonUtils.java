@@ -74,12 +74,12 @@ public class JsonUtils {
 			// 도로명 주소를 우선으로 세팅한다.
 			if (isRoadAddress) {
 				roadAddress.setAddress((String) naverAddress.get("address"));
-				roadAddress.setX(Double.valueOf((String) point.get("x")));
-				roadAddress.setY(Double.valueOf((String) point.get("y")));
+				roadAddress.setX((Double) point.get("x"));
+				roadAddress.setY((Double) point.get("y"));
 			} else {
 				gibunAddress.setAddress((String) naverAddress.get("address"));
-				gibunAddress.setX(Double.valueOf((String) point.get("x")));
-				gibunAddress.setY(Double.valueOf((String) point.get("y")));
+				gibunAddress.setX((Double) point.get("x"));
+				gibunAddress.setY((Double) point.get("y"));
 			}
 		}
 		

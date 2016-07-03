@@ -16,18 +16,18 @@
 		<where>
 			<choose>
 				<when test="roadAddress != null">
-					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(roadAddress.x)">
+					<if test="roadAddress.x != 0">
 						AND x = #{roadAddress.x}
 					</if>
-					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(roadAddress.y)">
+					<if test="roadAddress.y != 0">
 						AND y = #{roadAddress.y}
 					</if>
 				</when>
 				<otherwise>
-					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(gibunAddress.x)">
+					<if test="gibunAddress.x != 0">
 						AND x = #{gibunAddress.x}
 					</if>
-					<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(gibunAddress.y)">
+					<if test="gibunAddress.y != 0">
 						AND y = #{gibunAddress.y}
 					</if>
 				</otherwise>

@@ -53,10 +53,8 @@ public class NaverMapController {
 				
 				MapInfo naverMapInfo = JsonUtils.convertToNaver(naverMapJson);
 				// 사용자가 선택한 좌표를 저장
-				naverMapInfo.setMinX(address.getX());
-				naverMapInfo.setMaxX(address.getX());
-				naverMapInfo.setMinY(address.getY());
-				naverMapInfo.setMaxY(address.getY());
+				naverMapInfo.setX(address.getX());
+				naverMapInfo.setY(address.getY());
 
 				mapServiece.modifyMap(naverMapInfo);
 				

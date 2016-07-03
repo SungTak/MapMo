@@ -3,8 +3,10 @@ package com.taky.mapmo.map.model;
 import java.util.Date;
 
 import org.apache.ibatis.type.Alias;
+import org.springframework.stereotype.Component;
 
 @Alias("address")
+@Component
 public class Address {
 	private double x;
 	private double y;

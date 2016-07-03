@@ -1,6 +1,7 @@
 package com.taky.mapmo.map.model;
 
 import org.apache.ibatis.type.Alias;
+import org.springframework.stereotype.Component;
 
 /**
  * Map이라고 하고 싶었지만 JDK의 HashMap과 헷갈릴 것 같아서 suffix로 info를 붙임
@@ -9,7 +10,15 @@ import org.apache.ibatis.type.Alias;
  *
  */
 @Alias("mapInfo")
+@Component
 public class MapInfo {
+	/** MapMo 검색 X 좌표 */
+	private double x;
+	/** MapMo 검색 Y 좌표 */
+	private double y;
+	/** MapMo 검색 Z 좌표(층수) */
+	private double z;
+
 	private Address gibunAddress;
 	private Address roadAddress;
 	private double minX;
@@ -63,5 +72,29 @@ public class MapInfo {
 
 	public void setMaxY(double maxY) {
 		this.maxY = maxY;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	public void setZ(double z) {
+		this.z = z;
 	}
 }
